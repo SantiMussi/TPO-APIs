@@ -1,29 +1,32 @@
 package com.uade.tpo.marketplace.service;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.ArrayList;
+import java.util.Optional;
 import com.uade.tpo.marketplace.entity.Category;
+import com.uade.tpo.marketplace.exceptions.CategoryDuplicateException;
 import com.uade.tpo.marketplace.repository.CategoryRepository;
 
 public class CategoryService {
+    private CategoryRepository categoryRepository;
+
+    public CategoryService() {
+        categoryRepository = new CategoryRepository();
+    }
 
     public ArrayList<Category> getCategories() {
-        CategoryRepository categoryRepository = new CategoryRepository();
         return categoryRepository.getCategories();
     }
 
-    public Category getCategoryById(int categoryId) {
-        CategoryRepository categoryRepository = new CategoryRepository();
+    public Optional<Category> getCategoryById(int categoryId) {
         return categoryRepository.getCategoryById(categoryId);
     }
 
-    public String createCategory(String entity) {
-        CategoryRepository categoryRepository = new CategoryRepository();
-        return categoryRepository.createCategory(entity);
+    public Category createCategory(int newCategoryId, String description) throws CategoryDuplicateException {
+        ArrayList<Category> categories = categoryRepository.getCategories();
+        if (categories.stream().anyMatch(
+                category -> category.getId() == newCategoryId && category.getDescription().equals(description)))
+            throw new CategoryDuplicateException();
+        return categoryRepository.createCategory(newCategoryId, description);
     }
     
 }
