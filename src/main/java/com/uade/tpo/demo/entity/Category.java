@@ -1,11 +1,15 @@
 package com.uade.tpo.demo.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
@@ -15,7 +19,7 @@ public class Category {
     public Category() {
     }
 
-    public Category(String description) {
+    public Category(Description description) {
         this.description = description;
     }
 
@@ -24,8 +28,9 @@ public class Category {
     private Long id;
 
     @Column
-    private String description;
+    @Enumerated(EnumType.STRING)
+    private Description description;
 
-    @OneToOne(mappedBy = "category")
-    private Product product;
+    @OneToMany(mappedBy = "category")
+    private List<Product> product;
 }

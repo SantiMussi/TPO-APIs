@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -17,9 +17,24 @@ public class Product {
     private Long id;
 
     @Column
+    private String name;
+
+    @Column
     private String description;
 
-    @OneToOne
+    @Column
+    private String size;
+
+    @Column
+    private int stock;
+
+    @Column
+    private double price;
+
+    @Column
+    private double discount;
+
+    @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 }
