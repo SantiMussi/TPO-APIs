@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import com.uade.tpo.demo.entity.Category;
+import com.uade.tpo.demo.entity.Description;
 import com.uade.tpo.demo.exceptions.CategoryDuplicateException;
 
 public interface CategoryService {
@@ -13,5 +14,5 @@ public interface CategoryService {
 
     public Optional<Category> getCategoryById(Long categoryId);
 
-    public Category createCategory(String description) throws CategoryDuplicateException;
+    public Category createCategory(Description description) throws CategoryDuplicateException;
 }
