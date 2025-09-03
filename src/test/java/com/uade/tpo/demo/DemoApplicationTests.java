@@ -1,10 +1,10 @@
-package com.uade.tpo.marketplace;
+package com.uade.tpo.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MarketplaceApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
