@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.uade.tpo.demo.entity.Category;
-import com.uade.tpo.demo.entity.Description;
 import com.uade.tpo.demo.exceptions.CategoryDuplicateException;
 import com.uade.tpo.demo.repository.CategoryRepository;
 
@@ -29,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Transactional(rollbackFor = Throwable.class)
-    public Category createCategory(Description description) throws CategoryDuplicateException {
+    public Category createCategory(String description) throws CategoryDuplicateException {
         List<Category> categories = categoryRepository.findByDescription(description);
         if (categories.isEmpty()) {
             categoryRepository.save(new Category(description));
