@@ -38,6 +38,8 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                                 .requestMatchers("/error/**").permitAll()
+                                                .requestMatchers("/product/**").permitAll()
+
                                                 .requestMatchers("/categories/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
 
                                                 /*
@@ -47,6 +49,7 @@ public class SecurityConfig {
                                                 */
 
                                                 .anyRequest()
+
                                                 .authenticated())
                                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                                 .authenticationProvider(authenticationProvider)
