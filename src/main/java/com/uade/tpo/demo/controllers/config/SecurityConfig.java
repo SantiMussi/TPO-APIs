@@ -27,9 +27,25 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
                                 .csrf(AbstractHttpConfigurer::disable)
-                                .authorizeHttpRequests(req -> req.requestMatchers("/api/v1/auth/**").permitAll()
+                                .authorizeHttpRequests(req -> req
+
+
+                                                /*
+
+                                                        MAPEO DE PATHS Y ROLES PARA ACCESO A REQUESTS
+
+                                                 */
+
+                                                .requestMatchers("/api/v1/auth/**").permitAll()
                                                 .requestMatchers("/error/**").permitAll()
-                                                .requestMatchers("/categories/**").hasAnyAuthority(Role.USER.name())
+                                                .requestMatchers("/categories/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+
+                                                /*
+
+                                                        FIN DE MAPEOS
+
+                                                */
+
                                                 .anyRequest()
                                                 .authenticated())
                                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
