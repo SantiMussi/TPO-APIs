@@ -19,7 +19,7 @@ public class Category {
     public Category() {
     }
 
-    public Category(Description description) {
+    public Category(String description) {
         this.description = description;
     }
 
@@ -29,7 +29,7 @@ public class Category {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Description description;
+    private String description;
 
     @OneToMany(mappedBy = "category")
     private List<Product> product;

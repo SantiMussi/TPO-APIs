@@ -1,6 +1,5 @@
 package com.uade.tpo.demo.controllers.categories;
 
-import com.uade.tpo.demo.entity.Description;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,7 +61,7 @@ public class CategoriesController {
     @PostMapping
     public ResponseEntity<Object> createCategory(@RequestBody CategoryRequest categoryRequest)
             throws CategoryDuplicateException {
-        Category result = categoryService.createCategory(Description.valueOf(categoryRequest.getDescription()));
+        Category result = categoryService.createCategory(String.valueOf(categoryRequest.getDescription()));
         return ResponseEntity.created(URI.create("/categories/" + result.getId())).body(result);
     }
 
