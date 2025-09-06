@@ -2,8 +2,10 @@ package com.uade.tpo.demo.service;
 
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.repository.ProductRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,9 +27,9 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findById(productId);
     }
 
-
+    //Si algo falla se hace rollback
+    @Transactional(rollbackFor = Throwable.class)
     public Product createProduct(String name, String description, String size, int stock, double price, double discount) {
-        productRepository.save(new Product(name, description, size, stock, price, discount));
-        return null;
+        return productRepository.save(new Product(name, description, size, stock, price, discount));
     }
 }
