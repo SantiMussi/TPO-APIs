@@ -1,6 +1,7 @@
 package com.uade.tpo.demo.entity;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,5 +30,6 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Product> product;
 }

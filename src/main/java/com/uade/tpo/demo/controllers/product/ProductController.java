@@ -61,7 +61,8 @@ public class ProductController {
                 productRequest.getSize(),
                 productRequest.getStock(),
                 productRequest.getPrice(),
-                productRequest.getDiscount()
+                productRequest.getDiscount(),
+                productRequest.getCategoryId()
         );
 
         System.out.println(result.getId());

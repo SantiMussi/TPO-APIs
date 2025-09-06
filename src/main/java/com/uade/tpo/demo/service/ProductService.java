@@ -11,5 +11,5 @@ public interface ProductService {
 
     public Optional<Product> getProductById(Long productId);
 
-    public Product createProduct(String name, String description, String size, int stock, double price, double discount);
+    public Product createProduct(String name, String description, String size, int stock, double price, double discount, Long category_id);
 }
