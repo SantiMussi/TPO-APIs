@@ -5,6 +5,7 @@ import com.uade.tpo.demo.controllers.stock.StockResponse;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.service.ProductService;
 import com.uade.tpo.demo.service.StockService;
+import com.uade.tpo.demo.entity.Category;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +52,7 @@ public class ProductController {
             return ResponseEntity.ok(result.get());
 
         return ResponseEntity.noContent().build();
-    }
+    }     
 
 
     @PostMapping

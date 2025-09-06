@@ -5,11 +5,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uade.tpo.demo.entity.Category;
+import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.exceptions.CategoryDuplicateException;
 import com.uade.tpo.demo.service.CategoryService;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +66,14 @@ public class CategoriesController {
         Category result = categoryService.createCategory(String.valueOf(categoryRequest.getDescription()));
         return ResponseEntity.created(URI.create("/categories/" + result.getId())).body(result);
     }
+
+    @GetMapping("/{categoryId}/{productSize}")
+    public ResponseEntity<List<Product>> getProductsBySize(@PathVariable Long categoryId, @PathVariable String productSize) {
+            Optional<List<Product>> result = categoryService.getProductsBySize(productSize, categoryId);
+            if(result.isPresent()){
+                return ResponseEntity.ok(result.get());
+            }
+            return ResponseEntity.noContent().build();
+        }
 
     }

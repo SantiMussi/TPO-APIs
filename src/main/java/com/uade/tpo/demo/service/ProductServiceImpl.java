@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.entity.Category;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,7 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findById(productId);
     }
 
+
     //Si algo falla se hace rollback
     @Transactional(rollbackFor = Throwable.class)
     public Product createProduct(String name, String description, String size, int stock, double price, double discount, Long categoryId) {
@@ -43,6 +45,5 @@ public class ProductServiceImpl implements ProductService{
             p.setCategory(c);
         }
         return productRepository.save(p);
-        //return productRepository.save(new Product(name, description, size, stock, price, discount, category_id));
     }
 }
