@@ -42,10 +42,9 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                                 .requestMatchers("/error/**").permitAll()
-                                                .requestMatchers(FULL_CATEGORY_ENDPOINT).permitAll()
 
                                                 //Category
-                                                .requestMatchers(FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())  
+                                                .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.USER.name(), Role.SELLER.name(), Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name()) //Solo el seller y admin pueden crear categorias
                                                 
                                                 //Product
