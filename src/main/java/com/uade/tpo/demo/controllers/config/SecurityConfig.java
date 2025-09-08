@@ -25,6 +25,7 @@ public class SecurityConfig {
         private final AuthenticationProvider authenticationProvider;
         private static final String FULL_PRODUCT_ENDPOINT = "/product/**";
         private static final String FULL_CATEGORY_ENDPOINT = "/categories/**";
+        private static final String FULL_USER_ENDPOINT = "/user/**";
         
         
         @Bean
@@ -44,13 +45,22 @@ public class SecurityConfig {
                                                 .requestMatchers("/error/**").permitAll()
 
                                                 //Category
-                                                .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.USER.name(), Role.SELLER.name(), Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name()) //Solo el seller y admin pueden crear categorias
+                                                .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
+                                                .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
                                                 
                                                 //Product
                                                 .requestMatchers(HttpMethod.POST, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.DELETE, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.PUT, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())                                                
+                                                .requestMatchers(HttpMethod.PUT, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.GET, FULL_PRODUCT_ENDPOINT).permitAll()
+
+                                                //User
+                                                .requestMatchers(HttpMethod.PUT, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                
+                                                //Purchase
+                                                .requestMatchers(HttpMethod.POST, FULL_PRODUCT_ENDPOINT + "/purchase").hasAnyAuthority(Role.USER.name())
+                                                
                                                 
                                                 /*
 
