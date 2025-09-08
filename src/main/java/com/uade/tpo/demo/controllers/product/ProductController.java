@@ -99,10 +99,9 @@ public class ProductController {
                 return ResponseEntity.ok(new StockResponse(productId, newStock));
             }catch (EntityNotFoundException e){
                 return ResponseEntity.notFound().build();
-            } catch (IllegalArgumentException e){ //Insufficient stock for decrease
-                return ResponseEntity.badRequest().build();
         }
     }
+<<<<<<< HEAD
 
 
     //PURCHASE
@@ -135,3 +134,6 @@ public class ProductController {
             }
     }
 }
+=======
+}
+>>>>>>> origin/origin/prueba_duplicado
