@@ -5,8 +5,8 @@ import com.uade.tpo.demo.controllers.stock.StockResponse;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.service.ProductService;
 import com.uade.tpo.demo.service.StockService;
-import com.uade.tpo.demo.entity.Category;
-
+import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
+import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Optional;
-import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -105,4 +104,34 @@ public class ProductController {
         }
     }
 
+
+    //PURCHASE
+
+    // POST product/purchase
+    // EXAMPLE Body: {"productId": 1, "quantity": 2}
+    @PostMapping("/purchase") 
+    public ResponseEntity<PurchaseResponse> purchaseProduct(
+        @RequestBody PurchaseRequest request){
+            if(request.getProductId() == null || request.getQuantity() == null){
+                return ResponseEntity.badRequest().body(new PurchaseResponse(null, null, null, "ProductId and Quantity are required"));
+            }
+            if(request.getQuantity() <=0){
+                return ResponseEntity.badRequest().body(new PurchaseResponse(null, null, null, "Quantity must be greater than zero"));
+            }
+
+            try{
+                int newStock = stockService.changeStock(
+                    request.getProductId(),
+                    -request.getQuantity() //Decrease stock
+                );
+
+                return ResponseEntity.ok(new PurchaseResponse(request.getProductId(), request.getQuantity(), newStock, "Purchase successful"));
+            } catch(EntityNotFoundException e){
+                return ResponseEntity.status(404).body(
+                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, "Product not found")
+                );
+            } catch(IllegalArgumentException e){
+                return ResponseEntity.badRequest().body(new PurchaseResponse(request.getProductId(), request.getQuantity(), null, "Insufficient stock for the requested quantity"));
+            }
+    }
 }
