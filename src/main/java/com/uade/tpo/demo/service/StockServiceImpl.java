@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.service;
 
+import com.uade.tpo.demo.exceptions.InvalidStockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,13 @@ public class StockServiceImpl implements StockService {
 
 
     @Transactional
-    public int changeStock(long productId, int quantity){
+    public int changeStock(long productId, int quantity) throws InvalidStockException {
         Product p = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
         
         int newStock = p.getStock() + quantity;
-        if (newStock < 0) throw new IllegalStateException("Stock insuficiente.");
+        if (newStock <= 0) throw new InvalidStockException("No hay suficiente stock.");
+
         p.setStock(newStock);
         productRepository.save(p);
         return p.getStock();
