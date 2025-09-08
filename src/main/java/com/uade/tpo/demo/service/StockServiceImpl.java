@@ -18,7 +18,7 @@ public class StockServiceImpl implements StockService {
        Product p = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
        
-                if(p.getStock() < 0) throw new IllegalStateException("No hay stock del producto.");
+                if(p.getStock() == 0) throw new IllegalStateException("No hay stock del producto.");
        return p.getStock();
     }
 
