@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService{
             p.setCategory(c);
         }
         if (productRepository.existsDuplicate(name, description, size, price)) {
-            throw new ProductDuplicateException("Ya existe un producto con esas características.");
+            throw new ProductDuplicateException();
         }
 
         return productRepository.save(p);

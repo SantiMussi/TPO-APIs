@@ -30,7 +30,7 @@ public class StockServiceImpl implements StockService {
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
         
         int newStock = p.getStock() + quantity;
-        if (newStock <= 0) throw new InvalidStockException("No hay suficiente stock.");
+        if (newStock < 0) throw new InvalidStockException();
 
         p.setStock(newStock);
         productRepository.save(p);
