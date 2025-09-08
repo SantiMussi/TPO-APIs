@@ -45,10 +45,10 @@ public class ProductServiceImpl implements ProductService{
             Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
             p.setCategory(c);
         }
-        if (productRepository.existsDuplicate(name, description, size, price)) {
-            throw new ProductDuplicateException();
+        if (!productRepository.existsDuplicate(name, description, size, price)) {
+            return productRepository.save(p);
         }
 
-        return productRepository.save(p);
+        throw new ProductDuplicateException();
     }
 }
