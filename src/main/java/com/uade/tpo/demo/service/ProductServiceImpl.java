@@ -1,6 +1,7 @@
 package com.uade.tpo.demo.service;
 
 import com.uade.tpo.demo.entity.Product;
+import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.repository.ProductRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -38,12 +39,16 @@ public class ProductServiceImpl implements ProductService{
 
     //Si algo falla se hace rollback
     @Transactional(rollbackFor = Throwable.class)
-    public Product createProduct(String name, String description, String size, int stock, double price, double discount, Long categoryId) {
+    public Product createProduct(String name, String description, String size, int stock, double price, double discount, Long categoryId) throws ProductDuplicateException {
         Product p = new Product(name, description, size, stock, price, discount);
         if (categoryId != null) {
             Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
             p.setCategory(c);
         }
+        if (productRepository.existsDuplicate(name, description, size, price)) {
+            throw new ProductDuplicateException("Ya existe un producto con esas características.");
+        }
+
         return productRepository.save(p);
     }
 }
