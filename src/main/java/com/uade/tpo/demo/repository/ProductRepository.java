@@ -19,6 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "UPDATE Product p SET p.stock = p.stock + ?2 WHERE p.id = ?1 AND (p.stock + ?2) >= 0")
     int changeStock(long productId, int quantity); //Negativo descuenta, positivo repone el stock
 
-    
-    
+    @Query(value = "SELECT CASE WHEN COUNT(p)>0 THEN TRUE ELSE FALSE END FROM Product p WHERE p.name = ?1 AND p.description = ?2 AND p.size = ?3 AND p.price = ?4")
+    boolean existsDuplicate(String productName, String productDescription, String productSize, double price);
 }
