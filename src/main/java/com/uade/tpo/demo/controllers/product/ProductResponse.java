@@ -1,9 +1,14 @@
 package com.uade.tpo.demo.controllers.product;
-
+ 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+ 
+
 @Data
-public class ProductRequest {
+@AllArgsConstructor
+public class ProductResponse {
+    private Long productId;
     private String name;
     private String description;
     private String size;
@@ -11,4 +16,5 @@ public class ProductRequest {
     private Double price;
     private Double discount;
     private Long categoryId;
+    private String message;
 }

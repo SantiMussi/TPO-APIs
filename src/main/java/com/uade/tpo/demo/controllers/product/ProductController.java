@@ -10,6 +10,9 @@ import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.exceptions.ProductDuplicateException;
+import com.uade.tpo.demo.service.PurchaseService;
+
+
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.Optional;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+
+import java.net.URI;
+import java.util.Optional;
+
+
 
 
 
@@ -37,6 +42,9 @@ public class ProductController {
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private PurchaseService purchaseService;
 
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(
@@ -75,6 +83,41 @@ public class ProductController {
     }
 
 
+    @PutMapping("/{productId}/modify")
+    public ResponseEntity<Object> updateProduct(
+        @PathVariable Long productId,
+        @RequestBody ProductRequest req
+    ) {
+
+        try {
+            Product updatedProduct = productService.changeProductInfo(
+            productId,
+            req.getName(),
+            req.getDescription(),
+            req.getSize(),
+            req.getStock(),
+            req.getPrice(),
+            req.getDiscount(), 
+            req.getCategoryId() 
+        ); 
+            return ResponseEntity.ok(updatedProduct); 
+        } catch (ProductNotFoundException e){
+            return ResponseEntity.status(404).body("Product not found"); 
+        }
+    }
+
+
+    @DeleteMapping("/{productId}/delete") 
+    public ResponseEntity<Object> deleteProduct(@PathVariable Long productId){
+        try {
+            productService.deleteProduct(productId);
+            return ResponseEntity.ok().body("Product deleted");
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(404).body("Product not found");
+        }
+    } 
+    
+
 
     //STOCK
 
@@ -86,7 +129,7 @@ public class ProductController {
             try{
                 int stock = stockService.getStock(productId);
                 return ResponseEntity.ok(new StockResponse(productId, stock));
-            } catch (EntityNotFoundException e) {
+            } catch (ProductNotFoundException e) {
                 return ResponseEntity.notFound().build();
             }
     }
@@ -105,6 +148,7 @@ public class ProductController {
         }
     }
 
+    
 
     //PURCHASE
 
@@ -113,43 +157,22 @@ public class ProductController {
     @PostMapping("/purchase") 
     public ResponseEntity<PurchaseResponse> purchaseProduct(
         @RequestBody PurchaseRequest request){
-            if(request.getProductId() == null || request.getQuantity() == null){
-                return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(null, null, null, null, "ProductId and Quantity are required"));
-            }
-            if(request.getQuantity() <=0){
-                return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(null, null, null, null, "Quantity must be greater than zero"));
-            }
             try{
-                int newStock = stockService.changeStock(
-                    request.getProductId(),
-                    -request.getQuantity() //Decrease stock
+                PurchaseResponse resp = purchaseService.purchaseProduct(request);
+                return ResponseEntity.ok(resp);
+            }catch(IllegalArgumentException e){
+                return ResponseEntity.badRequest().body(
+                    new PurchaseResponse(null, null, null, null, e.getMessage())
                 );
-
-
-                //Calculate total price
-                Product product = productService.getProductById(request.getProductId()).get();
-                double total = product.getPrice() * request.getQuantity() * (1 - product.getDiscount());
-
-                return ResponseEntity.ok(
-                    new PurchaseResponse(
-                        request.getProductId(), 
-                        request.getQuantity(), 
-                        newStock, 
-                        total, 
-                        "Purchase successful"
-                        )
-                    );
-
-            } catch(ProductNotFoundException e){
+            }catch(ProductNotFoundException e){
                 return ResponseEntity.status(404).body(
                     new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Product not found")
                 );
                 
             } catch(InvalidStockException e){
                 return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Insufficient stock for the requested quantity"));
+                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Insufficient stock for the requested quantity")
+                    );
             }
     }
 }

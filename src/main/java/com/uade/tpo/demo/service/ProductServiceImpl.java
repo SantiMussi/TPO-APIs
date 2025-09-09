@@ -3,6 +3,11 @@ package com.uade.tpo.demo.service;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.repository.ProductRepository;
+import com.uade.tpo.demo.exceptions.ProductNotFoundException;
+import com.uade.tpo.demo.repository.CategoryRepository;
+import com.uade.tpo.demo.entity.Category;
+import com.uade.tpo.demo.controllers.product.ProductRequest;
+import com.uade.tpo.demo.controllers.product.ProductResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -12,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import com.uade.tpo.demo.repository.CategoryRepository;
-import com.uade.tpo.demo.entity.Category;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -51,4 +55,33 @@ public class ProductServiceImpl implements ProductService{
 
         throw new ProductDuplicateException();
     }
+
+    @Transactional
+    @Override
+    public Product changeProductInfo (Long prodId, String name, String description, String size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException{
+        Product p = productRepository.findById(prodId).orElseThrow(() -> new ProductNotFoundException());
+
+        if (name != null) p.setName(name);
+        if (description != null) p.setDescription(description);
+        if (size != null) p.setSize(size);
+        if (stock != null) p.setStock(stock);
+        if (price != null) p.setPrice(price);
+        if (discount != null) p.setDiscount(discount);
+        if (categoryId != null){
+            Category c = categoryRepository.getById(categoryId); 
+            p.setCategory(c);
+        } 
+
+        
+        return productRepository.save(p);
+    }
+    
+    @Override
+    public void deleteProduct(Long productId){
+        Product p = productRepository.findById(productId)
+            .orElseThrow(() -> new ProductNotFoundException());
+        productRepository.delete(p); 
+    }
+    
+    
 }

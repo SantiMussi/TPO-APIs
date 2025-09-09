@@ -27,6 +27,9 @@ public class SecurityConfig {
         private static final String FULL_CATEGORY_ENDPOINT = "/categories/**";
         private static final String FULL_USER_ENDPOINT = "/user/**";
         private static final String PURCHASE_ENDPOINT = "/product/purchase";
+        private static final String PRODUCT_MODIFY_ENDPOINT = "/product/{productId}/modify";
+        private static final String PRODUCT_DELETE_ENDPOINT = "/product/{productId}/delete";
+
         
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,6 +50,12 @@ public class SecurityConfig {
                                                 //Purchase
                                                 .requestMatchers(HttpMethod.POST, PURCHASE_ENDPOINT).hasAnyAuthority(Role.USER.name())
 
+                                                // Modify
+                                                .requestMatchers(HttpMethod.PUT, PRODUCT_MODIFY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.SELLER.name())
+                                                
+                                                // Delete
+                                                .requestMatchers(HttpMethod.DELETE, PRODUCT_DELETE_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.SELLER.name())
+
                                                 //Category
                                                 .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
                                                 .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
@@ -60,7 +69,7 @@ public class SecurityConfig {
                                                 //User
                                                 .requestMatchers(HttpMethod.PUT, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                
+                                                .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
 
                                                 
                                                 
