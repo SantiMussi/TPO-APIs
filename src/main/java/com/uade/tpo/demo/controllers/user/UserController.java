@@ -37,7 +37,7 @@ public class UserController {
         
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<Page<User>> getUsers(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
