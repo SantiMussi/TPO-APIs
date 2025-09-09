@@ -12,5 +12,6 @@ public interface UserService {
 
     public Optional<User> getUserById(Long id);
 
-    public User changeUserInfo(long UserId, String email, String name, String password, String firstName, String lastName);
+    public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName);
+
 }

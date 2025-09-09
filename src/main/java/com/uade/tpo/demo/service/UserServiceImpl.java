@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public User changeUserInfo(long UserId, String email, String name, String password, String firstName, String lastName) {
+    public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName) {
         User u = userRepository.findById(UserId).orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         //Si algun parametro es null, no se actualiza

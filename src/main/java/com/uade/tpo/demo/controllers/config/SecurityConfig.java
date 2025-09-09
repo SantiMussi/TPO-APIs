@@ -29,6 +29,7 @@ public class SecurityConfig {
         private static final String PURCHASE_ENDPOINT = "/product/purchase";
         private static final String PRODUCT_MODIFY_ENDPOINT = "/product/{productId}/modify";
         private static final String PRODUCT_DELETE_ENDPOINT = "/product/{productId}/delete";
+        private static final String USER_GET_ENDPOINT = "/users";
 
         
         @Bean
@@ -55,6 +56,9 @@ public class SecurityConfig {
                                                 
                                                 // Delete
                                                 .requestMatchers(HttpMethod.DELETE, PRODUCT_DELETE_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.SELLER.name())
+
+                                                // Get Users
+                                                .requestMatchers(HttpMethod.GET, USER_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
 
                                                 //Category
                                                 .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
