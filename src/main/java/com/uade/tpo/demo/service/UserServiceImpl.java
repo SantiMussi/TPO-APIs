@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.exceptions.UserDuplicateException;
 import com.uade.tpo.demo.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -40,6 +41,10 @@ public class UserServiceImpl implements UserService{
         if (password != null) u.setPassword(password);
         if (firstName != null) u.setFirstName(firstName);
         if (lastName != null) u.setLastName(lastName);
+        
+        if (userRepository.existsByEmail(email)) {
+            throw new UserDuplicateException();
+        }
         
         return userRepository.save(u);
     }

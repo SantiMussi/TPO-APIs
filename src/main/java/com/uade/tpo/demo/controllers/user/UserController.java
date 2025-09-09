@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.exceptions.UserDuplicateException;
 import com.uade.tpo.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,14 @@ public class UserController {
     private UserService userService;
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> changeUserInfo(@PathVariable Long id, @RequestBody UserChangeRequest request){
-        User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), request.getPassword(), request.getFirstName(), request.getLastName());
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<Object> changeUserInfo(@PathVariable Long id, @RequestBody UserChangeRequest request){
+        try{
+            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), request.getPassword(), request.getFirstName(), request.getLastName());
+            return ResponseEntity.ok(updatedUser);
+        } catch (UserDuplicateException e) {
+            return ResponseEntity.status(409).body("Email already exists.");
+        }
+        
     }
 
 }
