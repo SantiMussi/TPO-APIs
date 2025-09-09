@@ -5,7 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.UserDuplicateException;
 import com.uade.tpo.demo.service.UserService;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.uade.tpo.demo.controllers.user.UserChangeRequest;
 
 
 @RestController
@@ -29,7 +27,11 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> changeUserInfo(@PathVariable Long id, @RequestBody UserChangeRequest request){
         try{
-            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), passwordEncoder.encode(request.getPassword()), request.getFirstName(), request.getLastName());
+            String pass = null;
+            if(request.getPassword() != null){
+                pass = passwordEncoder.encode(request.getPassword());
+            }
+            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), pass, request.getFirstName(), request.getLastName());
             return ResponseEntity.ok(updatedUser);
         } catch (UserDuplicateException e) {
             return ResponseEntity.status(409).body("Email already exists.");
