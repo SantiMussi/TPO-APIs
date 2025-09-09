@@ -9,5 +9,6 @@ public class PurchaseResponse {
     private Long productId;
     private Integer purchased;
     private Integer stockRemaining;
+    private Double total;
     private String message;
 }

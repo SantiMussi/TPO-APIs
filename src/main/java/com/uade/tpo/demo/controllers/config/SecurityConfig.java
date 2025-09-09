@@ -26,7 +26,7 @@ public class SecurityConfig {
         private static final String FULL_PRODUCT_ENDPOINT = "/product/**";
         private static final String FULL_CATEGORY_ENDPOINT = "/categories/**";
         private static final String FULL_USER_ENDPOINT = "/user/**";
-        
+        private static final String PURCHASE_ENDPOINT = "/product/purchase";
         
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,6 +44,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                                 .requestMatchers("/error/**").permitAll()
 
+                                                //Purchase
+                                                .requestMatchers(HttpMethod.POST, PURCHASE_ENDPOINT).hasAnyAuthority(Role.USER.name())
+
                                                 //Category
                                                 .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
                                                 .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
@@ -58,8 +61,7 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.PUT, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 
-                                                //Purchase
-                                                .requestMatchers(HttpMethod.POST, FULL_PRODUCT_ENDPOINT + "/purchase").hasAnyAuthority(Role.USER.name())
+
                                                 
                                                 
                                                 /*

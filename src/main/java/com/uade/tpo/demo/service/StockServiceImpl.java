@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.repository.ProductRepository;
+import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -17,9 +18,9 @@ public class StockServiceImpl implements StockService {
 
     public int getStock(long productId) {
        Product p = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
+                .orElseThrow(() -> new ProductNotFoundException());
        
-                if(p.getStock() == 0) throw new IllegalStateException("No hay stock del producto.");
+                if(p.getStock() == 0) throw new InvalidStockException();
        return p.getStock();
     }
 
@@ -27,7 +28,7 @@ public class StockServiceImpl implements StockService {
     @Transactional
     public int changeStock(long productId, int quantity) throws InvalidStockException {
         Product p = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
+                .orElseThrow(() -> new ProductNotFoundException());
         
         int newStock = p.getStock() + quantity;
         if (newStock < 0) throw new InvalidStockException();

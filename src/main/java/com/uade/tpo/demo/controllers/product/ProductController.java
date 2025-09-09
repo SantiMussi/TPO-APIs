@@ -3,10 +3,13 @@ package com.uade.tpo.demo.controllers.product;
 import com.uade.tpo.demo.controllers.stock.StockAdjustRequest;
 import com.uade.tpo.demo.controllers.stock.StockResponse;
 import com.uade.tpo.demo.entity.Product;
+import com.uade.tpo.demo.exceptions.InvalidStockException;
 import com.uade.tpo.demo.service.ProductService;
 import com.uade.tpo.demo.service.StockService;
 import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
+import com.uade.tpo.demo.exceptions.ProductNotFoundException;
+import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,11 +100,10 @@ public class ProductController {
             try{
                 int newStock = stockService.changeStock(productId, request.getQuantity());
                 return ResponseEntity.ok(new StockResponse(productId, newStock));
-            }catch (EntityNotFoundException e){
+            }catch (ProductNotFoundException e){
                 return ResponseEntity.notFound().build();
         }
     }
-<<<<<<< HEAD
 
 
     //PURCHASE
@@ -112,28 +114,42 @@ public class ProductController {
     public ResponseEntity<PurchaseResponse> purchaseProduct(
         @RequestBody PurchaseRequest request){
             if(request.getProductId() == null || request.getQuantity() == null){
-                return ResponseEntity.badRequest().body(new PurchaseResponse(null, null, null, "ProductId and Quantity are required"));
+                return ResponseEntity.badRequest().body(
+                    new PurchaseResponse(null, null, null, null, "ProductId and Quantity are required"));
             }
             if(request.getQuantity() <=0){
-                return ResponseEntity.badRequest().body(new PurchaseResponse(null, null, null, "Quantity must be greater than zero"));
+                return ResponseEntity.badRequest().body(
+                    new PurchaseResponse(null, null, null, null, "Quantity must be greater than zero"));
             }
-
             try{
                 int newStock = stockService.changeStock(
                     request.getProductId(),
                     -request.getQuantity() //Decrease stock
                 );
 
-                return ResponseEntity.ok(new PurchaseResponse(request.getProductId(), request.getQuantity(), newStock, "Purchase successful"));
-            } catch(EntityNotFoundException e){
+
+                //Calculate total price
+                Product product = productService.getProductById(request.getProductId()).get();
+                double total = product.getPrice() * request.getQuantity();
+
+                return ResponseEntity.ok(
+                    new PurchaseResponse(
+                        request.getProductId(), 
+                        request.getQuantity(), 
+                        newStock, 
+                        total, 
+                        "Purchase successful"
+                        )
+                    );
+
+            } catch(ProductNotFoundException e){
                 return ResponseEntity.status(404).body(
-                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, "Product not found")
+                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Product not found")
                 );
-            } catch(IllegalArgumentException e){
-                return ResponseEntity.badRequest().body(new PurchaseResponse(request.getProductId(), request.getQuantity(), null, "Insufficient stock for the requested quantity"));
+                
+            } catch(InvalidStockException e){
+                return ResponseEntity.badRequest().body(
+                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Insufficient stock for the requested quantity"));
             }
     }
 }
-=======
-}
->>>>>>> origin/origin/prueba_duplicado
