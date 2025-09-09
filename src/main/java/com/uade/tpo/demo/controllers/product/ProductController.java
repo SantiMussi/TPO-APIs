@@ -130,7 +130,7 @@ public class ProductController {
 
                 //Calculate total price
                 Product product = productService.getProductById(request.getProductId()).get();
-                double total = product.getPrice() * request.getQuantity();
+                double total = product.getPrice() * request.getQuantity() * (1 - product.getDiscount());
 
                 return ResponseEntity.ok(
                     new PurchaseResponse(
