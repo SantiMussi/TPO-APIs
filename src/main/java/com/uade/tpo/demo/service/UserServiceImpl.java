@@ -34,17 +34,19 @@ public class UserServiceImpl implements UserService{
     @Override
     public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName) {
         User u = userRepository.findById(UserId).orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+        
+        if (email != null && !email.equals(u.getEmail())) {
+            Optional<User> userWithEmail = userRepository.findByEmail(email);
+            if (userWithEmail.isPresent() && !userWithEmail.get().getId().equals(UserId)) {
+                throw new UserDuplicateException();
+            }
+            u.setEmail(email);
+        }
 
-        //Si algun parametro es null, no se actualiza
-        if (email != null) u.setEmail(email);
         if (name != null) u.setName(name);
         if (password != null) u.setPassword(password);
         if (firstName != null) u.setFirstName(firstName);
         if (lastName != null) u.setLastName(lastName);
-        
-        if (userRepository.existsByEmail(email)) {
-            throw new UserDuplicateException();
-        }
         
         return userRepository.save(u);
     }

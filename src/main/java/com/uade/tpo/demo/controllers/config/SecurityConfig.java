@@ -25,7 +25,7 @@ public class SecurityConfig {
         private final AuthenticationProvider authenticationProvider;
         private static final String FULL_PRODUCT_ENDPOINT = "/product/**";
         private static final String FULL_CATEGORY_ENDPOINT = "/categories/**";
-        private static final String FULL_USER_ENDPOINT = "/user/**";
+        private static final String FULL_USER_ENDPOINT = "/users/**";
         private static final String PURCHASE_ENDPOINT = "/product/purchase";
         private static final String PRODUCT_MODIFY_ENDPOINT = "/product/{productId}/modify";
         private static final String PRODUCT_DELETE_ENDPOINT = "/product/{productId}/delete";
