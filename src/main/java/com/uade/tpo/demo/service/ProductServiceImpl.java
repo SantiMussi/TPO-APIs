@@ -1,6 +1,7 @@
 package com.uade.tpo.demo.service;
 
 import com.uade.tpo.demo.entity.Product;
+import com.uade.tpo.demo.entity.Size;
 import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
@@ -43,7 +44,7 @@ public class ProductServiceImpl implements ProductService{
 
     //Si algo falla se hace rollback
     @Transactional(rollbackFor = Throwable.class)
-    public Product createProduct(String name, String description, String size, int stock, double price, double discount, Long categoryId) throws ProductDuplicateException {
+    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long categoryId) throws ProductDuplicateException {
         Product p = new Product(name, description, size, stock, price, discount);
         if (categoryId != null) {
             Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
@@ -58,7 +59,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public Product changeProductInfo (Long prodId, String name, String description, String size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException{
+    public Product changeProductInfo (Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException{
         Product p = productRepository.findById(prodId).orElseThrow(() -> new ProductNotFoundException());
 
         if (name != null) p.setName(name);

@@ -2,13 +2,7 @@ package com.uade.tpo.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -22,7 +16,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, String size, int stock, double price, double discount) {
+    public Product(String name, String description, Size size, int stock, double price, double discount) {
         this.name = name;
         this.description = description;
         this.size = size;
@@ -37,8 +31,8 @@ public class Product {
     @Column
     private String description;
 
-    @Column
-    private String size;
+    @Enumerated(EnumType.STRING)
+    private Size size;
 
     @Column
     private int stock;
