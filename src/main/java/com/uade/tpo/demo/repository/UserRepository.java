@@ -15,7 +15,7 @@ import com.uade.tpo.demo.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String mail);
 
-    @Query(value = "SELECT u.email, u.name, u.firstName, u.lastName, u.id FROM User u")
+    @Query(value = "SELECT u.email, u.firstName, u.lastName, u.id FROM User u")
     Page<User> getUsers(PageRequest pageRequest);
 
     @Query(value = "SELECT u FROM User u WHERE u.id = ?1")
