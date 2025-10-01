@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Page<User> getUsers(PageRequest pageRequest) {
-        return userRepository.findAll(pageRequest);
+        return userRepository.getUsers(pageRequest);
     }
 
     @Override
