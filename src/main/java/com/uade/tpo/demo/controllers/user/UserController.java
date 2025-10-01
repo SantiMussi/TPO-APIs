@@ -12,6 +12,8 @@ import com.uade.tpo.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("users")
@@ -38,13 +40,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<User>> getUsers(
+    public ResponseEntity<List<User>> getUsers(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         if (page == null || size == null)
-            return ResponseEntity.ok(userService.getUsers(PageRequest.of(0, Integer.MAX_VALUE)));
+            return ResponseEntity.ok((userService.getUsers(PageRequest.of(0, Integer.MAX_VALUE))).getContent());
 
-        return ResponseEntity.ok(userService.getUsers(PageRequest.of(page, size)));
+        return ResponseEntity.ok(userService.getUsers(PageRequest.of(page, size)).getContent());
     }
 
 }
