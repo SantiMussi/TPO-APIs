@@ -6,13 +6,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.uade.tpo.demo.controllers.order.OrderDetailResponse;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.UserDuplicateException;
+import com.uade.tpo.demo.service.OrderService;
 import com.uade.tpo.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
 import java.util.List;
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 @RestController
@@ -21,6 +24,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrderService orderService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -40,13 +46,26 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers(
+    public ResponseEntity<Page<User>> getUsers(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         if (page == null || size == null)
-            return ResponseEntity.ok((userService.getUsers(PageRequest.of(0, Integer.MAX_VALUE))).getContent());
+            return ResponseEntity.ok(userService.getUsers(PageRequest.of(0, Integer.MAX_VALUE)));
 
-        return ResponseEntity.ok(userService.getUsers(PageRequest.of(page, size)).getContent());
+        return ResponseEntity.ok(userService.getUsers(PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<Object> getUserOrders(@PathVariable Long id) {
+        try {
+            List<OrderDetailResponse> responses = orderService.getOrdersByUser(id)
+                    .stream()
+                    .map(OrderDetailResponse::from)
+                    .toList();
+            return ResponseEntity.ok(responses);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body("User not found");
+        }
     }
 
 }
