@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.controllers.order;
 
+import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,8 @@ public class OrderController {
         try {
             Order order = orderService.getOrder(orderId);
             return ResponseEntity.ok(OrderDetailResponse.from(order));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body("Order not found");
+        } catch (OrderNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }   

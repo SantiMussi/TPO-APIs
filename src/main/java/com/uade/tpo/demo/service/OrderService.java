@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.Product;
+import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 
 public interface OrderService {
     Order createOrder(Long userId, Product product, Integer quantity, Double totalPrice);
 
     List<Order> getOrdersByUser(Long userId);
 
-    Order getOrder(Long orderId);
+    Order getOrder(Long orderId) throws OrderNotFoundException;
 }

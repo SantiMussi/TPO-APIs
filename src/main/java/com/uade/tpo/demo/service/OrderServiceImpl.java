@@ -2,6 +2,7 @@ package com.uade.tpo.demo.service;
 
 import java.util.List;
 
+import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException());
     }
 }
