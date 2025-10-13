@@ -47,4 +47,7 @@ public class Product {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @JsonIgnore
     private Category category;
+
+    @Column
+    private String imageUrl;
 }

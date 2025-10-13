@@ -20,4 +20,8 @@ public interface ProductService {
     public Product changeProductInfo(Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException;
 
     public void deleteProduct(Long productId) throws ProductNotFoundException;
+
+    public Product saveProduct(Product product);
+
+    public Product updateImage(Long productId, String imageUrl);
 }

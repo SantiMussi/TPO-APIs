@@ -30,6 +30,8 @@ public class SecurityConfig {
         private static final String PRODUCT_MODIFY_ENDPOINT = "/product/{productId}/modify";
         private static final String PRODUCT_DELETE_ENDPOINT = "/product/{productId}/delete";
         private static final String USER_GET_ENDPOINT = "/users";
+        private static final String IMAGE_DELETE_PUT_ENDPOINT = "/product/{productId}/image";
+        private static final String IMAGE_GET_ENDPOINT = "/product/uploads/products/{filename}";
 
         
         @Bean
@@ -75,7 +77,10 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
 
-                                                
+                                                //Images
+                                                .requestMatchers(HttpMethod.GET, IMAGE_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                                                .requestMatchers(HttpMethod.POST, IMAGE_DELETE_PUT_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.DELETE, IMAGE_DELETE_PUT_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 
                                                 /*
 

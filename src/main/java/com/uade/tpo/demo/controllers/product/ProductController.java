@@ -9,28 +9,32 @@ import com.uade.tpo.demo.service.StockService;
 import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
-import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.service.PurchaseService;
 
 
-import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
-
-
-
+import java.util.UUID;
 
 
 @RestController
@@ -45,6 +49,8 @@ public class ProductController {
 
     @Autowired
     private PurchaseService purchaseService;
+
+    private final String UPLOAD_DIR = "uploads/products/";
 
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(
@@ -174,5 +180,124 @@ public class ProductController {
                     new PurchaseResponse(null, request.getProductId(), request.getQuantity(), null, null, "Insufficient stock for the requested quantity")
                     );
             }
+    }
+
+    // Post de imagenes de productos
+    @PostMapping("/{productId}/image")
+    public ResponseEntity<Object> uploadImage(
+            @PathVariable Long productId,
+            @RequestParam("file") MultipartFile file
+    ){
+        try{
+            String contentType = file.getContentType();
+
+            if (contentType == null || !contentType.contains("image")) {
+                return ResponseEntity.badRequest().body("File must be an image");
+            }
+
+            if (file.getSize() > 5 * 1024 * 1024){
+                return ResponseEntity.badRequest().body("File is too large");
+            }
+
+            Product product = productService.getProductById(productId).orElseThrow(ProductNotFoundException::new);
+
+            Path uploadPath = Paths.get(UPLOAD_DIR).toAbsolutePath().normalize();
+            if (!Files.exists(uploadPath)){
+                Files.createDirectories(uploadPath);
+            }
+
+            String fileName = generateFileName(file.getOriginalFilename());
+            Path filePath = uploadPath.resolve(fileName).normalize();
+            String oldImage = product.getImageUrl();
+
+            file.transferTo(filePath.toFile());
+
+            String imageUrl = "/images/" + fileName;
+            productService.updateImage(productId, imageUrl);
+
+            if (oldImage != null && !oldImage.isEmpty()){
+                try{
+
+                    deleteOldImage(oldImage);
+                } catch (IOException e) {
+                    System.err.println("Warning: Error deleting old image");
+                }
+            }
+
+            return ResponseEntity.ok().body("Image uploaded");
+
+        } catch(ProductNotFoundException e){
+            return ResponseEntity.status(404).body("Product not found");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error saving image to disk");
+        }
+    }
+
+    // Get de la imagen
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Object> getImage(
+            @PathVariable String filename
+    ){
+        try {
+            Path filePath = Paths.get(UPLOAD_DIR).toAbsolutePath().resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() && resource.isReadable()){
+                String contentType = Files.probeContentType(filePath);
+                if (contentType == null){
+                    contentType = "application/octet-stream";
+                }
+                return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().body("Invalid file name");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error reading image file");
+        }
+    }
+
+    // Delete de la imagen
+    @DeleteMapping("/{productId}/image")
+    public ResponseEntity<Object> deleteImage(
+            @PathVariable Long productId
+    ){
+        try{
+            Product product = productService.getProductById(productId).orElseThrow((ProductNotFoundException::new));
+
+            String oldImage = product.getImageUrl();
+            if (oldImage == null || oldImage.isEmpty()){
+                return ResponseEntity.badRequest().body("Product has no image");
+            }
+
+            deleteOldImage(oldImage);
+
+            productService.updateImage(productId, null);
+
+            return ResponseEntity.ok().body("Image deleted from product " + productId);
+
+        } catch (ProductNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error deleting image");
+        }
+    }
+
+    private String generateFileName(String originalName){
+        String extension = ".jpg";
+        if (originalName != null && originalName.contains(".")){
+            extension = originalName.substring(originalName.lastIndexOf("."));
+        }
+        return UUID.randomUUID() + extension;
+    }
+
+    private void deleteOldImage(String imageUrl) throws IOException {
+        String fileName = imageUrl.replace("/images/", "");
+        Path oldFile = Paths.get(UPLOAD_DIR).toAbsolutePath().normalize().resolve(fileName);
+        if (Files.exists(oldFile)){
+            Files.delete(oldFile);
+        }
     }
 }
