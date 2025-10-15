@@ -64,13 +64,6 @@ public class SecurityConfig {
                                                 // Delete
                                                 .requestMatchers(HttpMethod.DELETE, PRODUCT_DELETE_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.SELLER.name())
 
-                                                // Get Users
-                                                .requestMatchers(HttpMethod.GET, USER_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.PUT, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.GET, USER_GET_ME).authenticated()
-
                                                 //Category
                                                 .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
                                                 .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
@@ -80,6 +73,14 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.DELETE, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.PUT, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.GET, FULL_PRODUCT_ENDPOINT).permitAll()
+
+                                                //User
+                                                .requestMatchers(HttpMethod.GET, USER_GET_ME).authenticated()
+                                                .requestMatchers(HttpMethod.GET, USER_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.PUT, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+
 
                                                 
                                                 
