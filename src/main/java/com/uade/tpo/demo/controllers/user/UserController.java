@@ -3,6 +3,8 @@ package com.uade.tpo.demo.controllers.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,8 @@ import com.uade.tpo.demo.exceptions.UserDuplicateException;
 import com.uade.tpo.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Map;
 
 
 @RestController
@@ -47,4 +51,18 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers(PageRequest.of(page, size)));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getUserMe(@AuthenticationPrincipal com.uade.tpo.demo.entity.User user){
+
+        if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        String role = (user.getRole()!=null)?user.getRole().name(): null;
+
+        Map<String, Object> dto = Map.of(
+                "id", user.getId(),
+                "email", user.getEmail(),
+                "role", role);
+
+        return ResponseEntity.ok(dto);
+    }
 }
