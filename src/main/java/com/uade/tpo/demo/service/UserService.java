@@ -2,6 +2,7 @@ package com.uade.tpo.demo.service;
 
 import java.util.Optional;
 
+import com.uade.tpo.demo.entity.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -12,6 +13,6 @@ public interface UserService {
 
     public Optional<User> getUserById(Long id);
 
-    public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName);
+    public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName, Role role);
 
 }

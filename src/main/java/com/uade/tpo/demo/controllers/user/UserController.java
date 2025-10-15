@@ -1,7 +1,6 @@
 package com.uade.tpo.demo.controllers.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +33,7 @@ public class UserController {
             if(request.getPassword() != null){
                 pass = passwordEncoder.encode(request.getPassword());
             }
-            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), pass, request.getFirstName(), request.getLastName());
+            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), pass, request.getFirstName(), request.getLastName(), request.getRole());
             return ResponseEntity.ok(updatedUser);
         } catch (UserDuplicateException e) {
             return ResponseEntity.status(409).body("Email already exists.");

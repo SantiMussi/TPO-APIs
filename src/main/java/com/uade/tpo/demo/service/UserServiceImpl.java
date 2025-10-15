@@ -2,6 +2,7 @@ package com.uade.tpo.demo.service;
 
 import java.util.Optional;
 
+import com.uade.tpo.demo.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName) {
+    public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName, Role role) {
         User u = userRepository.findById(UserId).orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         
         if (email != null && !email.equals(u.getEmail())) {
@@ -47,10 +48,9 @@ public class UserServiceImpl implements UserService{
         if (password != null) u.setPassword(password);
         if (firstName != null) u.setFirstName(firstName);
         if (lastName != null) u.setLastName(lastName);
+        if (role != null) u.setRole(role);
         
         return userRepository.save(u);
     }
-    
-
 
 }

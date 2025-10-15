@@ -1,6 +1,6 @@
 package com.uade.tpo.demo.controllers.user;
 
-import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.entity.Role;
 
 import lombok.Data;
 
@@ -11,4 +11,5 @@ public class UserChangeRequest{
     private String password;
     private String firstName;
     private String lastName;
+    private Role role;
 }
