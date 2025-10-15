@@ -1,10 +1,12 @@
 package com.uade.tpo.demo.controllers.purchase;
 
+import com.uade.tpo.demo.entity.PurchaseItem;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class PurchaseRequest{
-    private Long productId;
-    private Integer quantity;
+    private List<PurchaseItem> items;
     private Long userId;
 }

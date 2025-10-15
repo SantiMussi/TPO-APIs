@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.service;
 
+import com.uade.tpo.demo.entity.PurchaseItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,8 @@ import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
+
+import java.util.List;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService{
@@ -27,45 +30,58 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     @Override
     @Transactional
-    public PurchaseResponse purchaseProduct(PurchaseRequest request){
-            if(request.getProductId() == null || request.getQuantity() == null){
-                throw new IllegalArgumentException("ProductId and Quantity are required");
-            }
-            if(request.getQuantity() <=0){
-                throw new IllegalArgumentException("Quantity must be greater than zero");
-            }
+    public PurchaseResponse purchaseProduct(PurchaseRequest request) {
 
-            Long userId = getAuthenticatedUserId();
+        List<PurchaseItem> items = request.getItems();
+        Long userId = getAuthenticatedUserId();
 
-            Product product = productService.getProductById(request.getProductId()).orElseThrow(() -> new ProductNotFoundException());
+        List<Integer> quantities = items.stream().map(PurchaseItem::getQuantity).toList();
 
-            Integer newStock = stockService.changeStock(
-                request.getProductId(),
-                -request.getQuantity()
+        int newStock = 0;
+        Order order = null;
+
+        List<Product> products = null;
+
+        double total = 0.0;
+
+        for (PurchaseItem item : items){
+            if (item.getProductId() == null || item.getQuantity() == null) throw new IllegalArgumentException("ProductId and Quantity are required");
+
+            if (item.getQuantity() <=0) throw new IllegalArgumentException("Quantity must be greater than zero");
+
+            Product product = productService.getProductById(item.getProductId()).orElseThrow(ProductNotFoundException::new);
+
+            products.add(product);
+
+            newStock = stockService.changeStock(
+                    item.getProductId(),
+                    -item.getQuantity()
             );
 
             Double price = product.getPrice();
-            Double discount = product.getDiscount();
-            Integer quantity = request.getQuantity();
+            double discount = product.getDiscount();
+            Integer quantity = item.getQuantity();
 
-            Double total = price * quantity * (1 - discount);
+            total = total + price * quantity * (1 - discount);
+        }
 
-            Order order = orderService.createOrder(
+        order = orderService.createOrder(
                 userId,
-                product,
-                request.getQuantity(),
+                products,
+                quantities,
                 total
-            );
+        );
 
-            return new PurchaseResponse(
+        List<Long> productIds = items.stream().map(PurchaseItem::getProductId).toList();
+
+        return new PurchaseResponse(
                 order.getId(),
-                product.getId(),
-                request.getQuantity(),
+                productIds,
+                quantities,
                 newStock,
                 total,
                 "Purchase successful"
-            );
-
+        );
     }
     
     private Long getAuthenticatedUserId() {
