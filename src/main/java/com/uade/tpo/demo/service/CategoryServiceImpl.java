@@ -3,6 +3,7 @@ package com.uade.tpo.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.uade.tpo.demo.exceptions.CategoryNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,5 +42,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     public Optional<List<Product>> getProductsBySize(String size, long categoryId){
         return categoryRepository.findBySize(size, categoryId);
+    }
+
+    @Transactional(rollbackFor = Throwable.class)
+    public Category deleteCategory(long id) throws CategoryNotFound {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAA");
+        Optional<Category> cat = categoryRepository.findById(id);
+        if (cat.isPresent()){
+            System.out.println(cat.get().getId());;
+            //Category cat = getCategoryById(id).get();
+            categoryRepository.delete(cat.get());
+            return cat.get();
+        } else {
+            throw new CategoryNotFound();
+        }
+
     }
 }

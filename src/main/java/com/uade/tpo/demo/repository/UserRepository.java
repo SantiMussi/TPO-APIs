@@ -2,6 +2,8 @@ package com.uade.tpo.demo.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,9 @@ import com.uade.tpo.demo.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String mail);
+
+    @Query(value = "SELECT u.email, u.name, u.firstName, u.lastName, u.id, u.role FROM User u")
+    Page<User> getUsers(PageRequest pageRequest);
 
     @Query(value = "SELECT u FROM User u WHERE u.id = ?1")
     int getUserById(long UserId);
