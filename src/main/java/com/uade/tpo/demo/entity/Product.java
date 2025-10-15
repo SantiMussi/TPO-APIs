@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Blob;
+
 @Data
 @Entity
 public class Product {
@@ -16,7 +18,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, Size size, int stock, double price, double discount, String img) {
+    public Product(String name, String description, Size size, int stock, double price, double discount, byte[] img) {
         this.name = name;
         this.description = description;
         this.size = size;
@@ -49,6 +51,7 @@ public class Product {
     @JsonIgnore
     private Category category;
 
-    @Column
-    private String img;
+    @Lob
+    @Column(name="imgdata", columnDefinition = "MEDIUMBLOB")
+    private byte[] img;
 }

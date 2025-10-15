@@ -7,8 +7,6 @@ import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.entity.Category;
-import com.uade.tpo.demo.controllers.product.ProductRequest;
-import com.uade.tpo.demo.controllers.product.ProductResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -20,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,8 +41,8 @@ public class ProductServiceImpl implements ProductService{
 
     //Si algo falla se hace rollback
     @Transactional(rollbackFor = Throwable.class)
-    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long categoryId, String base64img) throws ProductDuplicateException {
-        Product p = new Product(name, description, size, stock, price, discount, base64img);
+    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long categoryId, byte[] img) throws ProductDuplicateException {
+        Product p = new Product(name, description, size, stock, price, discount, img);
         if (categoryId != null) {
             Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
             p.setCategory(c);

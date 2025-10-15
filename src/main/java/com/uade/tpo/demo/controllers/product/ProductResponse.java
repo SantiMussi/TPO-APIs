@@ -16,6 +16,5 @@ public class ProductResponse {
     private Integer stock;
     private Double price;
     private Double discount;
-    private Long categoryId;
-    private String message;
+    private String base64img;
 }
