@@ -1,9 +1,7 @@
 package com.uade.tpo.demo.controllers.categories;
 
 import com.uade.tpo.demo.exceptions.CategoryNotFound;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.uade.tpo.demo.entity.Category;
 import com.uade.tpo.demo.entity.Product;
@@ -19,10 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("categories")
@@ -68,7 +62,7 @@ public class CategoriesController {
         return ResponseEntity.created(URI.create("/categories/" + result.getId())).body(result);
     }
 
-    @PostMapping("/deleteCategory")
+    @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteCategory(@RequestBody CategoryDeleteRequest deleteRequest)
             throws CategoryNotFound{
         System.out.println("AAAAAAA");
