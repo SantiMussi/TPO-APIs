@@ -44,8 +44,8 @@ public class ProductServiceImpl implements ProductService{
 
     //Si algo falla se hace rollback
     @Transactional(rollbackFor = Throwable.class)
-    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long categoryId) throws ProductDuplicateException {
-        Product p = new Product(name, description, size, stock, price, discount);
+    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long categoryId, String base64img) throws ProductDuplicateException {
+        Product p = new Product(name, description, size, stock, price, discount, base64img);
         if (categoryId != null) {
             Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
             p.setCategory(c);

@@ -12,4 +12,5 @@ public class ProductRequest {
     private Double price;
     private Double discount;
     private Long categoryId;
+    private String base64img;
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
+import java.io.File;
 import java.net.URI;
 import java.util.Optional;
 
@@ -50,16 +51,29 @@ public class ProductController {
     public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size){
-        if (page == null || size == null)
-            return ResponseEntity.ok(productService.getProducts(PageRequest.of(0, Integer.MAX_VALUE)));
-        return ResponseEntity.ok(productService.getProducts(PageRequest.of(page, size)));
+        Page<Product> result;
+        if (page == null || size == null){
+            result = productService.getProducts(PageRequest.of(0, Integer.MAX_VALUE));
+            for (Product product : result) {
+                product.setImg(ImageManager.fileToBase64(new File(product.getImg())));
+            }
+
+        } else {
+            result = productService.getProducts(PageRequest.of(page, size));
+            for (Product product : result) {
+                product.setImg(ImageManager.fileToBase64(new File(product.getImg())));
+            }
+        }
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
         Optional<Product> result = productService.getProductById(productId);
-        if (result.isPresent())
+        if (result.isPresent()){
+            result.get().setImg(ImageManager.fileToBase64(new File(result.get().getImg())));
             return ResponseEntity.ok(result.get());
+        }
 
         return ResponseEntity.noContent().build();
     }     
@@ -67,6 +81,9 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Object> createProduct(@RequestBody ProductRequest productRequest) {
+
+        File imgFile = ImageManager.base64save(productRequest.getBase64img(), System.getProperty("user.dir") + "//images//" + productRequest.getName());
+
         Product result = productService.createProduct(
                 productRequest.getName(),
                 productRequest.getDescription(),
@@ -74,7 +91,8 @@ public class ProductController {
                 productRequest.getStock(),
                 productRequest.getPrice(),
                 productRequest.getDiscount(),
-                productRequest.getCategoryId()
+                productRequest.getCategoryId(),
+                imgFile.getAbsolutePath()
         );
 
         System.out.println(result.getId());

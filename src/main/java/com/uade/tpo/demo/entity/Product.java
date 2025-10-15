@@ -16,13 +16,14 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, Size size, int stock, double price, double discount) {
+    public Product(String name, String description, Size size, int stock, double price, double discount, String img) {
         this.name = name;
         this.description = description;
         this.size = size;
         this.stock = stock;
         this.price = price;
         this.discount = discount;
+        this.img = img;
     }
 
     @Column
@@ -47,4 +48,7 @@ public class Product {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @JsonIgnore
     private Category category;
+
+    @Column
+    private String img;
 }
