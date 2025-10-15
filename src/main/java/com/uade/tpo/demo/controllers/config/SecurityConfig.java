@@ -78,10 +78,12 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.GET, FULL_PRODUCT_ENDPOINT).permitAll()
 
                                                 //User
+                                                .requestMatchers(HttpMethod.GET, USER_GET_ME).authenticated()
+                                                .requestMatchers(HttpMethod.GET, USER_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.PUT, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.GET, USER_GET_ME).authenticated()
+
 
                                                 
                                                 
