@@ -8,14 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
-import java.util.List;
 
 public interface ProductService {
     public Page<Product> getProducts(PageRequest pageRequest);
 
     public Optional<Product> getProductById(Long productId);
 
-    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long category_id) throws ProductDuplicateException;
+    public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long category_id, byte[] img) throws ProductDuplicateException;
 
     public Product changeProductInfo(Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException;
 

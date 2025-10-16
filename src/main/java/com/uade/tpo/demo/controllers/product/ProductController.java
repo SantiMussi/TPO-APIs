@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
+import java.io.File;
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.Optional;
 
 
@@ -47,19 +50,57 @@ public class ProductController {
     private PurchaseService purchaseService;
 
     @GetMapping
-    public ResponseEntity<Page<Product>> getProducts(
+    public ResponseEntity<Page<ProductResponse>> getProducts(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size){
-        if (page == null || size == null)
-            return ResponseEntity.ok(productService.getProducts(PageRequest.of(0, Integer.MAX_VALUE)));
-        return ResponseEntity.ok(productService.getProducts(PageRequest.of(page, size)));
+        Page<Product> result;
+
+        if (page == null || size == null){
+            result = productService.getProducts(PageRequest.of(0, Integer.MAX_VALUE));
+        } else {
+            result = productService.getProducts(PageRequest.of(page, size));
+        }
+
+        LinkedList<ProductResponse> responses = new LinkedList<>();
+
+        for (Product product : result) {
+            responses.add(new ProductResponse(
+                    product.getId(),
+                    product.getName(),
+                    product.getDescription(),
+                    product.getSize(),
+                    product.getStock(),
+                    product.getPrice(),
+                    product.getDiscount(),
+                    ImageManager.fileToBase64(product.getImg())
+            ));
+        }
+
+        return ResponseEntity.ok(new PageImpl<>(responses));
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
-        Optional<Product> result = productService.getProductById(productId);
-        if (result.isPresent())
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long productId) {
+
+        Optional<Product> product = productService.getProductById(productId);
+        ProductResponse productResponse = null;
+        if (product.isPresent()){
+            productResponse = new ProductResponse(
+                    product.get().getId(),
+                    product.get().getName(),
+                    product.get().getDescription(),
+                    product.get().getSize(),
+                    product.get().getStock(),
+                    product.get().getPrice(),
+                    product.get().getDiscount(),
+                    ImageManager.fileToBase64(product.get().getImg())
+            );
+        }
+
+        Optional<ProductResponse> result = Optional.of(productResponse);
+        if (result.isPresent()){
             return ResponseEntity.ok(result.get());
+        }
 
         return ResponseEntity.noContent().build();
     }     
@@ -67,6 +108,9 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Object> createProduct(@RequestBody ProductRequest productRequest) {
+
+        byte[] img = ImageManager.base64tobyteArray(productRequest.getBase64img(), System.getProperty("user.dir") + "//images//" + productRequest.getName());
+
         Product result = productService.createProduct(
                 productRequest.getName(),
                 productRequest.getDescription(),
@@ -74,7 +118,8 @@ public class ProductController {
                 productRequest.getStock(),
                 productRequest.getPrice(),
                 productRequest.getDiscount(),
-                productRequest.getCategoryId()
+                productRequest.getCategoryId(),
+                img
         );
 
         System.out.println(result.getId());
