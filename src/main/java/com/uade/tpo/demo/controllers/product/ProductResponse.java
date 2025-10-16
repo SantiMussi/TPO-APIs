@@ -12,9 +12,12 @@ public class ProductResponse {
     private Long productId;
     private String name;
     private String description;
+    private Long categoryId;
+    private String categoryName;
     private Size size;
     private Integer stock;
     private Double price;
     private Double discount;
     private String base64img;
+
 }

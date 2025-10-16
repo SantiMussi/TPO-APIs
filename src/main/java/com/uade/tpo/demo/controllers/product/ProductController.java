@@ -9,11 +9,8 @@ import com.uade.tpo.demo.service.StockService;
 import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
-import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.service.PurchaseService;
 
-
-import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,10 +24,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-import java.io.File;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.Optional;
+
+
+
+
+/*
+
+
+    Los metodos para get devuelven el objeto product response para poder enviar re codificar la imagen para el envio, esto tambien nos permite subir la category en las reponse
+    Este metodo de respuesta permite modificar el formato de los get para devolver info diferente de la que tenemos almacenada
+
+    Cualquier modificacion a la respuesta de algun producto debe ser modificada aca, no modificar el service
+
+*/
 
 
 
@@ -68,6 +77,8 @@ public class ProductController {
                     product.getId(),
                     product.getName(),
                     product.getDescription(),
+                    product.getCategory().getId(),
+                    product.getCategory().getDescription(),
                     product.getSize(),
                     product.getStock(),
                     product.getPrice(),
@@ -89,6 +100,8 @@ public class ProductController {
                     product.get().getId(),
                     product.get().getName(),
                     product.get().getDescription(),
+                    product.get().getCategory().getId(),
+                    product.get().getCategory().getDescription(),
                     product.get().getSize(),
                     product.get().getStock(),
                     product.get().getPrice(),
@@ -103,7 +116,7 @@ public class ProductController {
         }
 
         return ResponseEntity.noContent().build();
-    }     
+    }
 
 
     @PostMapping
