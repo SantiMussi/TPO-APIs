@@ -2,6 +2,7 @@ package com.uade.tpo.demo.service;
 
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.Size;
+import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
@@ -10,6 +11,9 @@ import com.uade.tpo.demo.entity.Category;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,8 @@ public class ProductServiceImpl implements ProductService{
 
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private UserService userService;
 
     public Page<Product> getProducts(PageRequest pageRequest) {
         return productRepository.findAll(pageRequest);
@@ -43,13 +49,36 @@ public class ProductServiceImpl implements ProductService{
     @Transactional(rollbackFor = Throwable.class)
     public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long categoryId, byte[] img) throws ProductDuplicateException {
         Product p = new Product(name, description, size, stock, price, discount, img);
-        if (categoryId != null) {
-            Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
-            p.setCategory(c);
+
+        // Conseguimos data de usuario que realizo la request
+
+        Authentication authdata = SecurityContextHolder.getContext().getAuthentication();
+        if (authdata != null){
+
+            UserDetails userDetails = (UserDetails) authdata.getPrincipal();
+
+            //System.out.println(userDetails.getUsername());
+
+            Optional<User> user = userService.getUserByEmail(userDetails.getUsername());
+
+            //System.out.println(user.get().getId());
+
+            if (user.isPresent()){
+                if (categoryId != null) {
+                    Category c = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
+                    p.setCategory(c);
+                    p.setCreatorId(user.get().getId());
+                }
+                if (!productRepository.existsDuplicate(name, description, size, price)) {
+                    return productRepository.save(p);
+                }
+            }
+
         }
-        if (!productRepository.existsDuplicate(name, description, size, price)) {
-            return productRepository.save(p);
-        }
+
+
+
+
 
         throw new ProductDuplicateException();
     }

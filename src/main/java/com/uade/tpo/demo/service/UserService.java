@@ -11,6 +11,8 @@ import com.uade.tpo.demo.entity.User;
 public interface UserService {
     public Page<User> getUsers(PageRequest pageRequest);
 
+    public Optional<User> getUserByEmail(String email);
+
     public Optional<User> getUserById(Long id);
 
     public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName, Role role);

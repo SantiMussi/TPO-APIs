@@ -41,6 +41,9 @@ public class Product {
     private int stock;
 
     @Column
+    private long creatorId;
+
+    @Column
     private double price;
 
     @Column

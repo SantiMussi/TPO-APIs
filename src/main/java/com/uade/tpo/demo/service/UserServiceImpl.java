@@ -31,6 +31,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(id);
     }
 
+    @Override
+    public Optional<User> getUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
     @Transactional
     @Override
     public User changeUserInfo(Long UserId, String email, String name, String password, String firstName, String lastName, Role role) {

@@ -30,7 +30,7 @@ public class ImageManager {
     public static byte[] base64tobyteArray(String base64, String dir){
 
         String[] data = base64.split(",");
-        System.out.println(Arrays.toString(data));
+        //System.out.println(Arrays.toString(data));
 
         return Base64.getDecoder().decode(data[1]);
 
