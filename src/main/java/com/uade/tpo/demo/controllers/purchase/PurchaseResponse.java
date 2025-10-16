@@ -5,13 +5,12 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-public class PurchaseResponse {
-    private Long orderId;
-    private List<Long> productId;
-    private List<Integer> purchased;
-    private Integer stockRemaining;
-    private Double total;
-    private String message;
-}
+import com.uade.tpo.demo.controllers.order.OrderItemResponse;
+
+public record PurchaseResponse(
+        Long orderId,
+        Long userId,
+        List<OrderItemResponse> products,
+        Double total,
+        String message
+) {}

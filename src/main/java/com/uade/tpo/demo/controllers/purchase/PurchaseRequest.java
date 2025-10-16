@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class PurchaseRequest{
-    private List<PurchaseItem> items;
     private Long userId;
+    private List<Long> productIds;
+    private List<Integer> quantities;
 }

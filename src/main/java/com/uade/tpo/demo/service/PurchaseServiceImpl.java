@@ -7,14 +7,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.demo.controllers.order.OrderItemResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.entity.Order;
+import com.uade.tpo.demo.entity.OrderItem;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
+import com.uade.tpo.demo.repository.OrderRepository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService{
@@ -26,59 +32,73 @@ public class PurchaseServiceImpl implements PurchaseService{
     private StockService stockService;
 
     @Autowired
-    private OrderService orderService;
+    private OrderRepository orderRepository;
 
     @Override
     @Transactional
     public PurchaseResponse purchaseProduct(PurchaseRequest request) {
 
-        List<PurchaseItem> items = request.getItems();
-        Long userId = getAuthenticatedUserId();
-
-        List<Integer> quantities = items.stream().map(PurchaseItem::getQuantity).toList();
-
-        int newStock = 0;
-        Order order = null;
-
-        List<Product> products = null;
-
-        double total = 0.0;
-
-        for (PurchaseItem item : items){
-            if (item.getProductId() == null || item.getQuantity() == null) throw new IllegalArgumentException("ProductId and Quantity are required");
-
-            if (item.getQuantity() <=0) throw new IllegalArgumentException("Quantity must be greater than zero");
-
-            Product product = productService.getProductById(item.getProductId()).orElseThrow(ProductNotFoundException::new);
-
-            products.add(product);
-
-            newStock = stockService.changeStock(
-                    item.getProductId(),
-                    -item.getQuantity()
-            );
-
-            Double price = product.getPrice();
-            double discount = product.getDiscount();
-            Integer quantity = item.getQuantity();
-
-            total = total + price * quantity * (1 - discount);
+        if (request.getProductIds() == null || request.getQuantities() == null || request.getProductIds().isEmpty()) {
+            throw new IllegalArgumentException("Products and quantities are required");
         }
 
-        order = orderService.createOrder(
-                userId,
-                products,
-                quantities,
-                total
-        );
+        if (request.getProductIds().size() != request.getQuantities().size()) {
+            throw new IllegalArgumentException("Products and quantities must match in size");
+        }
 
-        List<Long> productIds = items.stream().map(PurchaseItem::getProductId).toList();
+        Long userId = getAuthenticatedUserId();
+
+        Order order = new Order();
+        User user = new User();
+        user.setId(userId);
+        order.setUser(user);
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        Double total = 0.0;
+
+        Set<Long> uniqueProducts = new HashSet<>(request.getProductIds());
+        if (uniqueProducts.size() != request.getProductIds().size()) {
+            throw new IllegalArgumentException("Each product ID can only appear once");
+        }
+
+        for (int i = 0; i < request.getProductIds().size(); i++) {
+            Long productId = request.getProductIds().get(i);
+            Integer quantity = request.getQuantities().get(i);
+
+            if (quantity == null || quantity <= 0) {
+                throw new IllegalArgumentException("Quantity for product ID " + productId + " must be greater than 0");
+            }
+
+            Product product = productService.getProductById(productId)
+                    .orElseThrow(ProductNotFoundException::new);
+
+            stockService.changeStock(productId, -quantity);
+
+            double subtotal = product.getPrice() * quantity * (1 - product.getDiscount());
+            total += subtotal;
+
+            OrderItem item = new OrderItem();
+            item.setOrder(order); 
+            item.setProduct(product);
+            item.setQuantity(quantity);
+            item.setSubtotal(subtotal);
+
+            orderItems.add(item);
+        }
+
+        order.setProducts(orderItems);
+        order.setTotalPrice(total);
+
+        orderRepository.save(order);
+
+        List<OrderItemResponse> itemResponses = order.getProducts().stream()
+                .map(OrderItemResponse::from)
+                .toList();
 
         return new PurchaseResponse(
                 order.getId(),
-                productIds,
-                quantities,
-                newStock,
+                userId,
+                itemResponses,
                 total,
                 "Purchase successful"
         );

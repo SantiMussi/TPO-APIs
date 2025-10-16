@@ -7,7 +7,7 @@ import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 
 public interface OrderService {
-    Order createOrder(Long userId, Product product, Integer quantity, Double totalPrice);
+    Order createOrder(Long userId, List<Long> productIds, List<Integer> quantities);
 
     List<Order> getOrdersByUser(Long userId);
 

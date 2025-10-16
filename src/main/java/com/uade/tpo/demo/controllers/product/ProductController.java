@@ -168,16 +168,16 @@ public class ProductController {
                 return ResponseEntity.ok(resp);
             }catch(IllegalArgumentException e){
                 return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(null, null, null, null, null, e.getMessage())
+                    new PurchaseResponse(null, null, null, null, e.getMessage())
                 );
             }catch(ProductNotFoundException e){
                 return ResponseEntity.status(404).body(
-                    new PurchaseResponse(null,request.getProductId(), request.getQuantity(), null, null, "Product not found")
+                    new PurchaseResponse(null, null, null, null, "One or more products not found")
                 );
                 
             } catch(InvalidStockException e){
                 return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(null, request.getProductId(), request.getQuantity(), null, null, "Insufficient stock for the requested quantity")
+                    new PurchaseResponse(null, null, null, null, "Insufficient stock for one or more products")
                     );
             }
     }
