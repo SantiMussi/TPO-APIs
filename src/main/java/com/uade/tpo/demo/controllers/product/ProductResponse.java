@@ -9,11 +9,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ProductResponse {
-    private Long productId;
+    private Long id;
     private String name;
     private String description;
     private Long categoryId;
     private String categoryName;
+    private Long creatorId;
     private Size size;
     private Integer stock;
     private Double price;
