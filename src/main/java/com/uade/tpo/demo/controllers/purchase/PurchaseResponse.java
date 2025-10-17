@@ -12,5 +12,6 @@ public record PurchaseResponse(
         Long userId,
         List<OrderItemResponse> products,
         Double total,
+        String coupon,
         String message
 ) {}

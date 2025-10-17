@@ -12,4 +12,6 @@ public interface OrderService {
     List<Order> getOrdersByUser(Long userId);
 
     Order getOrder(Long orderId) throws OrderNotFoundException;
+
+    Order save(Order order);
 }

@@ -10,13 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.uade.tpo.demo.controllers.order.OrderItemResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
+import com.uade.tpo.demo.entity.Coupon;
 import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.OrderItem;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
+import com.uade.tpo.demo.repository.CouponRepository;
 import com.uade.tpo.demo.repository.OrderRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +35,10 @@ public class PurchaseServiceImpl implements PurchaseService{
     private StockService stockService;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
+
+    @Autowired
+    private CouponService couponService;
 
     @Override
     @Transactional
@@ -61,6 +67,7 @@ public class PurchaseServiceImpl implements PurchaseService{
             throw new IllegalArgumentException("Each product ID can only appear once");
         }
 
+
         for (int i = 0; i < request.getProductIds().size(); i++) {
             Long productId = request.getProductIds().get(i);
             Integer quantity = request.getQuantities().get(i);
@@ -87,9 +94,24 @@ public class PurchaseServiceImpl implements PurchaseService{
         }
 
         order.setProducts(orderItems);
+
+        String couponCode = request.getCouponCode();
+
+        if (couponCode != null && !couponCode.isEmpty()) {
+            Coupon coupon = couponService.findByCode(request.getCouponCode())
+                    .orElseThrow(() -> new IllegalArgumentException("Coupon is invalid."));
+
+            if (coupon.getExpirationDate().isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("Coupon is expired.");
+            }
+
+            order.setCoupon(coupon);
+            total -= total * coupon.getDiscount();
+        }
+
         order.setTotalPrice(total);
 
-        orderRepository.save(order);
+        orderService.save(order);
 
         List<OrderItemResponse> itemResponses = order.getProducts().stream()
                 .map(OrderItemResponse::from)
@@ -100,6 +122,7 @@ public class PurchaseServiceImpl implements PurchaseService{
                 userId,
                 itemResponses,
                 total,
+                couponCode,
                 "Purchase successful"
         );
     }

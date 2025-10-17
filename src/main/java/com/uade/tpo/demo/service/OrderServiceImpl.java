@@ -32,6 +32,11 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
 
     @Override
+    public Order save(Order order) {
+        return orderRepository.save(order);
+    }
+
+    @Override
     public Order createOrder(Long userId, List<Long> productIds, List<Integer> quantities) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
