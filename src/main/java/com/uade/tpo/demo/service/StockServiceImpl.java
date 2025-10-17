@@ -17,11 +17,12 @@ public class StockServiceImpl implements StockService {
     private ProductRepository productRepository;
 
     public int getStock(long productId) {
-       Product p = productRepository.findById(productId)
+        Product p = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException());
-       
-                if(p.getStock() == 0) throw new InvalidStockException();
-       return p.getStock();
+
+        if(p.getStock() == 0) throw new InvalidStockException();
+        
+        return p.getStock();
     }
 
 
