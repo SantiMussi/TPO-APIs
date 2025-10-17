@@ -125,7 +125,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Object> createProduct(@RequestBody ProductRequest productRequest) {
 
-        byte[] img = ImageManager.base64tobyteArray(productRequest.getBase64img(), System.getProperty("user.dir") + "//images//" + productRequest.getName());
+        byte[] img = ImageManager.base64tobyteArray(productRequest.getBase64img());
 
         Product result = productService.createProduct(
                 productRequest.getName(),
@@ -223,16 +223,16 @@ public class ProductController {
                 return ResponseEntity.ok(resp);
             }catch(IllegalArgumentException e){
                 return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(null, null, null, null, e.getMessage())
+                    new PurchaseResponse(null, null,null, null, null, e.getMessage())
                 );
             }catch(ProductNotFoundException e){
                 return ResponseEntity.status(404).body(
-                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Product not found")
+                    new PurchaseResponse(null, request.getUserId(), null,null, null, "Product not found")
                 );
                 
             } catch(InvalidStockException e){
                 return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(request.getProductId(), request.getQuantity(), null, null, "Insufficient stock for the requested quantity")
+                    new PurchaseResponse(null, request.getUserId(), null, null, null,"Insufficient stock for the requested quantity")
                     );
             }
     }

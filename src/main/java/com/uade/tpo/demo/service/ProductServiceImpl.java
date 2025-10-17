@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.service;
 
+import com.uade.tpo.demo.controllers.product.ImageManager;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.Size;
 import com.uade.tpo.demo.entity.User;
@@ -118,10 +119,10 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public Product updateImage(Long productId,  String imageUrl) {
+    public Product updateImage(Long productId,  String base64img) {
         Product p = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
 
-        p.setImageUrl(imageUrl);
+        p.setImg(ImageManager.base64tobyteArray(base64img));
         return productRepository.save(p);
     }
 }

@@ -27,7 +27,7 @@ public class ImageManager {
     }
 
 
-    public static byte[] base64tobyteArray(String base64, String dir){
+    public static byte[] base64tobyteArray(String base64){
 
         String[] data = base64.split(",");
         //System.out.println(Arrays.toString(data));

@@ -78,7 +78,7 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-}
+
     @GetMapping("/{id}/orders")
     public ResponseEntity<Object> getUserOrders(@PathVariable Long id) {
         try {
@@ -91,3 +91,4 @@ public class UserController {
             return ResponseEntity.status(404).body("User not found");
         }
     }
+}
