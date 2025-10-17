@@ -109,6 +109,19 @@ public class ProductServiceImpl implements ProductService{
             .orElseThrow(() -> new ProductNotFoundException());
         productRepository.delete(p); 
     }
-    
-    
+
+    @Transactional
+    @Override
+    public Product saveProduct(Product product){
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    @Override
+    public Product updateImage(Long productId,  String imageUrl) {
+        Product p = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
+
+        p.setImageUrl(imageUrl);
+        return productRepository.save(p);
+    }
 }

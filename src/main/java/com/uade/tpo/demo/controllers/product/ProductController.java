@@ -9,8 +9,11 @@ import com.uade.tpo.demo.service.StockService;
 import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.controllers.purchase.PurchaseRequest;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
+import com.uade.tpo.demo.exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.service.PurchaseService;
 
+
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

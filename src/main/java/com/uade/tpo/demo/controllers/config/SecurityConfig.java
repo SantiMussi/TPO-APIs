@@ -35,6 +35,7 @@ public class SecurityConfig {
         private static final String PRODUCT_MODIFY_ENDPOINT = "/product/{productId}/modify";
         private static final String PRODUCT_DELETE_ENDPOINT = "/product/{productId}/delete";
         private static final String USER_GET_ENDPOINT = "/users";
+        private static final String FULL_COUPON_ENDPOINT = "/coupons/**";
         private static final String USER_GET_ME = "/users/me";
 
         
@@ -64,14 +65,17 @@ public class SecurityConfig {
                                                 // Delete
                                                 .requestMatchers(HttpMethod.DELETE, PRODUCT_DELETE_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.SELLER.name())
 
+                                                // Get Users
+                                                .requestMatchers(HttpMethod.GET, USER_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+
                                                 //Category
                                                 .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
                                                 .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
                                                 
                                                 //Product
                                                 .requestMatchers(HttpMethod.POST, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.DELETE, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.PUT, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.DELETE, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.PUT, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.GET, FULL_PRODUCT_ENDPOINT).permitAll()
 
                                                 //User
@@ -81,8 +85,10 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
 
-
-                                                
+                                                // Coupon                                                // Coupons
+                                                .requestMatchers(HttpMethod.GET, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                                                .requestMatchers(HttpMethod.POST, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.DELETE, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 
                                                 /*
 

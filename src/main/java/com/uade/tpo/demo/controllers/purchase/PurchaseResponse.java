@@ -3,12 +3,15 @@ package com.uade.tpo.demo.controllers.purchase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
-@AllArgsConstructor
-public class PurchaseResponse {
-    private Long productId;
-    private Integer purchased;
-    private Integer stockRemaining;
-    private Double total;
-    private String message;
-}
+import java.util.List;
+
+import com.uade.tpo.demo.controllers.order.OrderItemResponse;
+
+public record PurchaseResponse(
+        Long orderId,
+        Long userId,
+        List<OrderItemResponse> products,
+        Double total,
+        String coupon,
+        String message
+) {}
