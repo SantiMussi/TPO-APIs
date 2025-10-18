@@ -1,6 +1,8 @@
 package com.uade.tpo.demo.controllers.coupon;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,8 +43,19 @@ public class CouponController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
-        couponService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Map<String, Object>> deleteCoupon(@PathVariable Long id) {
+        boolean deleted = couponService.delete(id);
+
+        if (deleted) {
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("couponId", id);
+            resp.put("message", "Coupon deleted successfully");
+            return ResponseEntity.ok(resp);
+        } else {
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("couponId", id);
+            resp.put("message", "Coupon not found");
+            return ResponseEntity.status(404).body(resp);
+        }
     }
 }

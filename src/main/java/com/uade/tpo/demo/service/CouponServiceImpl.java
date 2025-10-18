@@ -31,7 +31,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public void delete(Long id) {
-        couponRepository.deleteById(id);
+    public boolean delete(Long id) {
+        if (couponRepository.existsById(id)) {
+            couponRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

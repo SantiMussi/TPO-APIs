@@ -9,5 +9,5 @@ public interface CouponService {
     Coupon save(Coupon coupon);
     Optional<Coupon> findByCode(String code);
     List<Coupon> findAll();
-    void delete(Long id);
+    boolean delete(Long id);
 }

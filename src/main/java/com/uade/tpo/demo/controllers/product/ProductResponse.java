@@ -1,10 +1,9 @@
 package com.uade.tpo.demo.controllers.product;
- 
+
 import com.uade.tpo.demo.entity.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
- 
 
 @Data
 @AllArgsConstructor
