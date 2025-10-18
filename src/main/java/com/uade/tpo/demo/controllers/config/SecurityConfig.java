@@ -72,6 +72,7 @@ public class SecurityConfig {
                                                 //Category
                                                 .requestMatchers(HttpMethod.GET, FULL_CATEGORY_ENDPOINT).permitAll()
                                                 .requestMatchers(HttpMethod.POST, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
+                                                .requestMatchers(HttpMethod.PUT, FULL_CATEGORY_ENDPOINT).hasAnyAuthority(Role.ADMIN.name()) 
                                                 
                                                 //Product
                                                 .requestMatchers(HttpMethod.POST, FULL_PRODUCT_ENDPOINT).hasAnyAuthority(Role.SELLER.name(), Role.ADMIN.name())

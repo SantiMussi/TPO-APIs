@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 
+
 @RestController
 @RequestMapping("categories")
 public class CategoriesController {
@@ -35,7 +36,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long categoryId) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long categoryId) throws CategoryNotFound {
         Optional<Category> result = categoryService.getCategoryById(categoryId);
         if (result.isPresent())
             return ResponseEntity.ok(result.get());
@@ -71,6 +72,14 @@ public class CategoriesController {
 
     }
 
+    @PutMapping("/modify/{categoryId}")
+    public ResponseEntity<Object> modifyCategory(@PathVariable Long categoryId, @RequestBody CategoryModifyRequest modifyRequest) 
+            throws CategoryNotFound, CategoryDuplicateException{
+        
+        categoryService.modifyCategory(categoryId, modifyRequest.getDescription());
+        return ResponseEntity.ok().body("Category modified succesfully.");
+    }
+
 
     @GetMapping("/{categoryId}/{productSize}")
     public ResponseEntity<List<Product>> getProductsBySize(@PathVariable Long categoryId, @PathVariable String productSize) {
@@ -80,8 +89,6 @@ public class CategoriesController {
             }
             return ResponseEntity.noContent().build();
         }
-
-
 
     }
 

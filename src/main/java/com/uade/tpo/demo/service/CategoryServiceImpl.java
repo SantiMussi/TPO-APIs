@@ -58,4 +58,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
     }
+
+    @Transactional(rollbackFor = Throwable.class)
+    public Category modifyCategory(Long id, String newDescription) throws CategoryNotFound, CategoryDuplicateException {
+
+        Category category = categoryRepository.findById(id)
+            .orElseThrow(CategoryNotFound::new);
+
+        List<Category> existingCategories = categoryRepository.findByDescription(newDescription);
+        if (!existingCategories.isEmpty() && !existingCategories.get(0).getId().equals(id)) {
+            throw new CategoryDuplicateException();
+        }
+
+        category.setDescription(newDescription);
+
+        return categoryRepository.save(category);
+}
 }

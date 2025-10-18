@@ -19,5 +19,5 @@ public interface CategoryService {
     public Category createCategory(String description) throws CategoryDuplicateException;
     public Optional<List<Product>> getProductsBySize(String size, long categoryId);
     public Category deleteCategory(long id) throws CategoryNotFound;
-
+    public Category modifyCategory(Long id, String newDescription) throws CategoryNotFound, CategoryDuplicateException;
 }
