@@ -3,12 +3,14 @@ package com.uade.tpo.demo.controllers.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.uade.tpo.demo.controllers.order.OrderDetailResponse;
+import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.UserDuplicateException;
 import com.uade.tpo.demo.service.OrderService;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.persistence.EntityNotFoundException;
-
 
 @RestController
 @RequestMapping("users")
@@ -35,18 +36,19 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> changeUserInfo(@PathVariable Long id, @RequestBody UserChangeRequest request){
-        try{
+    public ResponseEntity<Object> changeUserInfo(@PathVariable Long id, @RequestBody UserChangeRequest request) {
+        try {
             String pass = null;
-            if(request.getPassword() != null){
+            if (request.getPassword() != null) {
                 pass = passwordEncoder.encode(request.getPassword());
             }
-            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), pass, request.getFirstName(), request.getLastName(), request.getRole());
+            User updatedUser = userService.changeUserInfo(id, request.getEmail(), request.getName(), pass,
+                    request.getFirstName(), request.getLastName(), request.getRole());
             return ResponseEntity.ok(updatedUser);
         } catch (UserDuplicateException e) {
             return ResponseEntity.status(409).body("Email already exists.");
         }
-        
+
     }
 
     @GetMapping
@@ -61,8 +63,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getUserMe(
-            @AuthenticationPrincipal com.uade.tpo.demo.entity.User user
-    ) {
+            @AuthenticationPrincipal com.uade.tpo.demo.entity.User user) {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -72,12 +73,16 @@ public class UserController {
         Map<String, Object> dto = Map.of(
                 "id", user.getId(),
                 "email", user.getEmail(),
-                "role", role
-        );
+                "role", role);
 
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/me/orders")
+    public ResponseEntity<List<Order>> getUserOrders(@AuthenticationPrincipal User user) {
+        List<Order> orders = orderService.getOrdersByUser(user.getId());
+        return ResponseEntity.ok(orders);
+    }
 
     @GetMapping("/{id}/orders")
     public ResponseEntity<Object> getUserOrders(@PathVariable Long id) {
