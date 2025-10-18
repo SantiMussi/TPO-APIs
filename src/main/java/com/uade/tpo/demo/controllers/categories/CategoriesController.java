@@ -1,5 +1,7 @@
 package com.uade.tpo.demo.controllers.categories;
 
+import com.uade.tpo.demo.controllers.product.ImageManager;
+import com.uade.tpo.demo.controllers.product.ProductResponse;
 import com.uade.tpo.demo.exceptions.CategoryNotFound;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,7 @@ import com.uade.tpo.demo.service.CategoryService;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +38,49 @@ public class CategoriesController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long categoryId) {
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long categoryId) {
         Optional<Category> result = categoryService.getCategoryById(categoryId);
-        if (result.isPresent())
-            return ResponseEntity.ok(result.get());
+
+        if (result.isPresent()){
+
+
+            LinkedList<ProductResponse> products = new LinkedList<>();
+
+            for (Product product : result.get().getProduct()) {
+                products.add(new ProductResponse(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getCategory().getId(),
+                        product.getCategory().getDescription(),
+                        product.getCreatorId(),
+                        product.getSize(),
+                        product.getStock(),
+                        product.getPrice(),
+                        product.getDiscount(),
+                        ImageManager.fileToBase64(product.getImg())
+                ));
+            }
+
+
+            CategoryResponse response = new CategoryResponse(result.get().getId(), result.get().getDescription(), products);
+
+            System.out.println("ID: " + result.get().getId());
+
+            System.out.println("Desc: " + result.get().getDescription());
+
+            System.out.println("Products: " + products);
+
+            System.out.println(response);
+
+
+            //System.out.println(result);
+
+            return ResponseEntity.ok(response);
+            //return ResponseEntity.ok(result.get());
+        }
+
+
 
         return ResponseEntity.noContent().build();
     }
