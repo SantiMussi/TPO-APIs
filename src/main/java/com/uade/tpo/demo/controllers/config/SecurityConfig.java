@@ -37,6 +37,7 @@ public class SecurityConfig {
         private static final String USER_GET_ENDPOINT = "/users";
         private static final String FULL_COUPON_ENDPOINT = "/coupons/**";
         private static final String USER_GET_ME = "/users/me";
+        private static final String ORDERS_GET_ENDPOINT = "/orders/**";
 
         
         @Bean
@@ -85,10 +86,13 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.DELETE, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.GET, FULL_USER_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
 
-                                                // Coupon                                                // Coupons
+                                                // Coupon
                                                 .requestMatchers(HttpMethod.GET, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
                                                 .requestMatchers(HttpMethod.POST, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 .requestMatchers(HttpMethod.DELETE, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+
+                                                // Order
+                                                .requestMatchers(HttpMethod.GET, ORDERS_GET_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
                                                 
                                                 /*
 

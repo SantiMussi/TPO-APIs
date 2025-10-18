@@ -1,11 +1,15 @@
 package com.uade.tpo.demo.controllers.order;
 
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uade.tpo.demo.entity.Order;
@@ -28,5 +32,19 @@ public class OrderController {
         } catch (OrderNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<OrderDetailResponse>> getAllOrders(@RequestParam(required = false) Long userId) {
+
+        List<Order> orders = (userId == null)
+                ? orderService.getAllOrders()
+                : orderService.getOrdersByUser(userId);
+
+        List<OrderDetailResponse> response = orders.stream()
+                .map(OrderDetailResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 }   

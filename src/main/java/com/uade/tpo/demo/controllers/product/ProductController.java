@@ -229,12 +229,12 @@ public class ProductController {
                 );
             }catch(ProductNotFoundException e){
                 return ResponseEntity.status(404).body(
-                    new PurchaseResponse(null, request.getUserId(), null,null, null, "Product not found")
+                    new PurchaseResponse(null, null, null, null, null, "Product not found")
                 );
                 
             } catch(InvalidStockException e){
                 return ResponseEntity.badRequest().body(
-                    new PurchaseResponse(null, request.getUserId(), null, null, null,"Insufficient stock for the requested quantity")
+                    new PurchaseResponse(null, null, null, null, null,"Insufficient stock for the requested quantity")
                     );
             }
     }

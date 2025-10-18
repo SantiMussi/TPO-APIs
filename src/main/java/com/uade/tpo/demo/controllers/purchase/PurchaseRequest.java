@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class PurchaseRequest{
-    private Long userId;
     private List<Long> productIds;
     private List<Integer> quantities;
     private String couponCode;
