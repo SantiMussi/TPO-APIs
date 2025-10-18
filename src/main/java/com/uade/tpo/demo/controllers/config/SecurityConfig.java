@@ -36,7 +36,7 @@ public class SecurityConfig {
         private static final String PRODUCT_DELETE_ENDPOINT = "/product/{productId}/delete";
         private static final String USER_GET_ENDPOINT = "/users";
         private static final String FULL_COUPON_ENDPOINT = "/coupons/**";
-        private static final String USER_GET_ME = "/users/me";
+        private static final String USER_GET_ME = "/users/me/**";
         private static final String ORDERS_GET_ENDPOINT = "/orders/**";
 
         
