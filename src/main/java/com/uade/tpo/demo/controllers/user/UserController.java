@@ -72,7 +72,8 @@ public class UserController {
         Map<String, Object> dto = Map.of(
                 "id", user.getId(),
                 "email", user.getEmail(),
-                "role", role
+                "role", role,
+                "orders", user.getOrders()
         );
 
         return ResponseEntity.ok(dto);
