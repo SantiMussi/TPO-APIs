@@ -2,6 +2,7 @@ package com.uade.tpo.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.OrderItem;
+import com.uade.tpo.demo.entity.OrderStatus;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.repository.OrderRepository;
@@ -18,6 +20,7 @@ import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -36,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
-    @Override
+    /*@Override
     public Order createOrder(Long userId, List<Long> productIds, List<Integer> quantities) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -65,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.save(order);
     }
-
+    */
     @Override
     public List<Order> getOrdersByUser(Long userId) {
         if (!userRepository.existsById(userId)) {
@@ -84,4 +87,16 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
+    @Transactional
+    public Order updateOrderStatus(Long orderId, OrderStatus status) throws OrderNotFoundException {
+        Optional<Order> orderFind = orderRepository.findById(orderId);
+        if (orderFind.isEmpty()) {
+            throw new OrderNotFoundException();
+        }
+
+        Order updatedOrder = orderFind.get();
+        updatedOrder.setStatus(status);
+        return orderRepository.save(updatedOrder);
+}
 }

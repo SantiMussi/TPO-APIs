@@ -13,6 +13,7 @@ import com.uade.tpo.demo.controllers.purchase.PurchaseResponse;
 import com.uade.tpo.demo.entity.Coupon;
 import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.OrderItem;
+import com.uade.tpo.demo.entity.OrderStatus;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
@@ -110,7 +111,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         }
 
         order.setTotalPrice(total);
-
+        order.setStatus(OrderStatus.PENDIENTE);
         orderService.save(order);
 
         List<OrderItemResponse> itemResponses = order.getProducts().stream()

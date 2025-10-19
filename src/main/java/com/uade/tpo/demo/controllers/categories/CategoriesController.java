@@ -39,11 +39,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/{categoryId}")
-<<<<<<< HEAD
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long categoryId) throws CategoryNotFound {
-=======
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long categoryId) {
->>>>>>> 2fbae21d0fb14d6a4dac0ccf38723ec8a563a73a
         Optional<Category> result = categoryService.getCategoryById(categoryId);
 
         if (result.isPresent()){
