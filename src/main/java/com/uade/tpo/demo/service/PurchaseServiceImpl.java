@@ -1,6 +1,5 @@
 package com.uade.tpo.demo.service;
 
-import com.uade.tpo.demo.entity.PurchaseItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,8 +16,6 @@ import com.uade.tpo.demo.entity.OrderStatus;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
-import com.uade.tpo.demo.repository.CouponRepository;
-import com.uade.tpo.demo.repository.OrderRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

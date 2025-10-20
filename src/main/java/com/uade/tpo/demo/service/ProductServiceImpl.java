@@ -96,8 +96,8 @@ public class ProductServiceImpl implements ProductService{
         if (price != null) p.setPrice(price);
         if (discount != null) p.setDiscount(discount);
         if (categoryId != null){
-            Category c = categoryRepository.getById(categoryId); 
-            p.setCategory(c);
+            Optional<Category> c = categoryRepository.findById(categoryId); 
+            p.setCategory(c.get());
         } 
 
         

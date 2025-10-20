@@ -18,4 +18,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query(value = "SELECT p FROM Category c JOIN c.product p WHERE p.size = ?1 AND p.stock > 0 AND c.id = ?2")
     Optional<List<Product>> findBySize(String size, long categoryId);
+
+    @Query(value = "SELECT c FROM Category c WHERE c.id + ?1 categoryId")
+    Optional<Category> findById(Long id);
 }

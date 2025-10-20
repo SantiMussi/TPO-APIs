@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.OrderStatus;
-import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 
 public interface OrderService {

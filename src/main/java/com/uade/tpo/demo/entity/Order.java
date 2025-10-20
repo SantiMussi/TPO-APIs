@@ -1,7 +1,6 @@
 package com.uade.tpo.demo.entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
