@@ -79,13 +79,20 @@ public class UserController {
     }
 
     @GetMapping("/me/orders")
-    public ResponseEntity<List<Order>> getUserOrders(@AuthenticationPrincipal User user) {
-        List<Order> orders = orderService.getOrdersByUser(user.getId());
-        return ResponseEntity.ok(orders);
+    public ResponseEntity<List<OrderDetailResponse>> getUserOrders(@AuthenticationPrincipal User user) {
+        try{
+            List<OrderDetailResponse> responses = orderService.getOrdersByUser(user.getId())
+                    .stream()
+                    .map(OrderDetailResponse::from)
+                    .toList();
+            return ResponseEntity.ok(responses);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}/orders")
-    public ResponseEntity<Object> getUserOrders(@PathVariable Long id) {
+    public ResponseEntity<List<OrderDetailResponse>> getUserOrders(@PathVariable Long id) {
         try {
             List<OrderDetailResponse> responses = orderService.getOrdersByUser(id)
                     .stream()
@@ -93,7 +100,7 @@ public class UserController {
                     .toList();
             return ResponseEntity.ok(responses);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body("User not found");
+            return ResponseEntity.notFound().build();
         }
     }
 }
