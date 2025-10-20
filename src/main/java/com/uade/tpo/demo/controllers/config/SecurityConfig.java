@@ -93,8 +93,8 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.DELETE, FULL_COUPON_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
 
                                                 // Order
-                                                .requestMatchers(HttpMethod.GET, FULL_ORDERS_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
-                                                .requestMatchers(HttpMethod.PUT, FULL_ORDERS_ENDPOINT).hasAnyAuthority(Role.ADMIN.name())
+                                                .requestMatchers(HttpMethod.GET, FULL_ORDERS_ENDPOINT).hasAnyAuthority(Role.ADMIN.name(), Role.SELLER.name())
+                                                .requestMatchers(HttpMethod.PUT, FULL_ORDERS_ENDPOINT).hasAnyAuthority(Role.SELLER.name())
                                                 
                                                 /*
 
