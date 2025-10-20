@@ -1,6 +1,5 @@
 package com.uade.tpo.demo.controllers.user;
 
-import com.uade.tpo.demo.controllers.order.OrderController;
 import com.uade.tpo.demo.controllers.order.OrderItemResponse;
 import com.uade.tpo.demo.controllers.product.ImageManager;
 import com.uade.tpo.demo.controllers.product.ProductResponse;

@@ -58,11 +58,7 @@ public class ProductServiceImpl implements ProductService{
 
             UserDetails userDetails = (UserDetails) authdata.getPrincipal();
 
-            //System.out.println(userDetails.getUsername());
-
             Optional<User> user = userService.getUserByEmail(userDetails.getUsername());
-
-            //System.out.println(user.get().getId());
 
             if (user.isPresent()){
                 if (categoryId != null) {

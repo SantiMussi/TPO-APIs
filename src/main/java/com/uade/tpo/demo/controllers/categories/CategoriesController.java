@@ -75,10 +75,8 @@ public class CategoriesController {
             System.out.println(response);
 
 
-            //System.out.println(result);
 
             return ResponseEntity.ok(response);
-            //return ResponseEntity.ok(result.get());
         }
 
 

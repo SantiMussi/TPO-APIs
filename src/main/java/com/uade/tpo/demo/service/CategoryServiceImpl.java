@@ -56,7 +56,6 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> cat = categoryRepository.findById(id);
         if (cat.isPresent()){
             System.out.println(cat.get().getId());;
-            //Category cat = getCategoryById(id).get();
             categoryRepository.delete(cat.get());
             return cat.get();
         } else {
