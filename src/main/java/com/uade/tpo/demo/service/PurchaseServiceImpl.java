@@ -112,7 +112,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         order.setTotalPrice(total);
         order.setStatus(OrderStatus.PENDIENTE);
-        orderService.save(order);
+        orderService.createOrder(order);
 
         List<OrderItemResponse> itemResponses = order.getProducts().stream()
                 .map(OrderItemResponse::from)

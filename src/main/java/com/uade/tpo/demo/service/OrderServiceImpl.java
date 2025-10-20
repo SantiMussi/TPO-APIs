@@ -35,40 +35,10 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
 
     @Override
-    public Order save(Order order) {
+    public Order createOrder(Order order) {
         return orderRepository.save(order);
     }
 
-    /*@Override
-    public Order createOrder(Long userId, List<Long> productIds, List<Integer> quantities) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        Order order = new Order();
-        order.setUser(user);
-        List<OrderItem> items = new ArrayList<>();
-        double totalPrice = 0.0;
-        
-        for (int i = 0; i < productIds.size(); i++) {
-            Product product = productRepository.findById(productIds.get(i)).orElseThrow(() -> new ProductNotFoundException());//Product product = products.get(i);
-            Integer quantity = quantities.get(i);
-            Double subtotal = product.getPrice() * quantity * (1 - product.getDiscount());
-
-            OrderItem item = new OrderItem();
-            item.setOrder(order);
-            item.setProduct(product);
-            item.setQuantity(quantity);
-            item.setSubtotal(subtotal);
-
-            items.add(item);
-            totalPrice += (subtotal);
-        }
-
-        order.setTotalPrice(totalPrice);
-
-        return orderRepository.save(order);
-    }
-    */
     @Override
     public List<Order> getOrdersByUser(Long userId) {
         if (!userRepository.existsById(userId)) {
