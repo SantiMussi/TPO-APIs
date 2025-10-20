@@ -1,22 +1,16 @@
 package com.uade.tpo.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
-import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.uade.tpo.demo.entity.Order;
-import com.uade.tpo.demo.entity.OrderItem;
 import com.uade.tpo.demo.entity.OrderStatus;
-import com.uade.tpo.demo.entity.Product;
-import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.repository.OrderRepository;
-import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -30,9 +24,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     @Override
     public Order createOrder(Order order) {

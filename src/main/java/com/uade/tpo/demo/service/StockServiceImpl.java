@@ -8,7 +8,6 @@ import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service

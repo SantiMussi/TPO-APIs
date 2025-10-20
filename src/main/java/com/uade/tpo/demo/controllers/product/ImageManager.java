@@ -1,8 +1,6 @@
 package com.uade.tpo.demo.controllers.product;
 
 
-import java.io.*;
-import java.util.Arrays;
 import java.util.Base64;
 
 public class ImageManager {

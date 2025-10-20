@@ -3,14 +3,12 @@ package com.uade.tpo.demo.controllers.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.uade.tpo.demo.controllers.order.OrderDetailResponse;
-import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.UserDuplicateException;
 import com.uade.tpo.demo.service.OrderService;

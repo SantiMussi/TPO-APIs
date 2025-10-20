@@ -7,9 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Optional;
-import java.util.List;
-
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
