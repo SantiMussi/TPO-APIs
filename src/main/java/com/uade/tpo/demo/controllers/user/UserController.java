@@ -1,7 +1,14 @@
 package com.uade.tpo.demo.controllers.user;
 
+import com.uade.tpo.demo.controllers.order.OrderController;
+import com.uade.tpo.demo.controllers.order.OrderItemResponse;
+import com.uade.tpo.demo.controllers.product.ImageManager;
+import com.uade.tpo.demo.controllers.product.ProductResponse;
+import com.uade.tpo.demo.entity.Order;
+import com.uade.tpo.demo.entity.OrderItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +23,7 @@ import com.uade.tpo.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,27 +85,103 @@ public class UserController {
     }
 
     @GetMapping("/me/orders")
-    public ResponseEntity<List<OrderDetailResponse>> getUserOrders(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Page<OrderDetailResponse>> getUserOrders(@AuthenticationPrincipal User user) {
         try{
-            List<OrderDetailResponse> responses = orderService.getOrdersByUser(user.getId())
-                    .stream()
-                    .map(OrderDetailResponse::from)
-                    .toList();
-            return ResponseEntity.ok(responses);
+            List<Order> responses = orderService.getOrdersByUser(user.getId());
+
+            LinkedList<OrderDetailResponse> orderDetailResponses = new LinkedList<>();
+
+            for (Order order : responses) {
+
+                LinkedList<OrderItemResponse> products = new LinkedList<>();
+
+                for (OrderItem product : order.getProducts()) {
+                    ProductResponse productResponse = new ProductResponse(
+                            product.getProduct().getId(),
+                            product.getProduct().getName(),
+                            product.getProduct().getDescription(),
+                            product.getProduct().getCategory().getId(),
+                            product.getProduct().getCategory().getDescription(),
+                            product.getProduct().getCreatorId(),
+                            product.getProduct().getSize(),
+                            product.getProduct().getStock(),
+                            product.getProduct().getPrice(),
+                            product.getProduct().getDiscount(),
+                            ImageManager.fileToBase64(product.getProduct().getImg())
+                    );
+
+                    products.add(new OrderItemResponse(
+                            productResponse,
+                            product.getQuantity(),
+                            product.getSubtotal()
+                    ));
+                }
+
+                orderDetailResponses.add(new OrderDetailResponse(
+                        order.getId(),
+                        order.getUser().getId(),
+                        order.getTotalPrice(),
+                        order.getStatus(),
+                        products));
+
+
+
+            }
+
+
+            return ResponseEntity.ok(new PageImpl<>(orderDetailResponses));
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/{id}/orders")
-    public ResponseEntity<List<OrderDetailResponse>> getUserOrders(@PathVariable Long id) {
-        try {
-            List<OrderDetailResponse> responses = orderService.getOrdersByUser(id)
-                    .stream()
-                    .map(OrderDetailResponse::from)
-                    .toList();
-            return ResponseEntity.ok(responses);
-        } catch (EntityNotFoundException e) {
+    public ResponseEntity<Page<OrderDetailResponse>> getUserOrders(@PathVariable Long id) {
+        try{
+            List<Order> responses = orderService.getOrdersByUser(id);
+
+            LinkedList<OrderDetailResponse> orderDetailResponses = new LinkedList<>();
+
+            for (Order order : responses) {
+
+                LinkedList<OrderItemResponse> products = new LinkedList<>();
+
+                for (OrderItem product : order.getProducts()) {
+                    ProductResponse productResponse = new ProductResponse(
+                            product.getProduct().getId(),
+                            product.getProduct().getName(),
+                            product.getProduct().getDescription(),
+                            product.getProduct().getCategory().getId(),
+                            product.getProduct().getCategory().getDescription(),
+                            product.getProduct().getCreatorId(),
+                            product.getProduct().getSize(),
+                            product.getProduct().getStock(),
+                            product.getProduct().getPrice(),
+                            product.getProduct().getDiscount(),
+                            ImageManager.fileToBase64(product.getProduct().getImg())
+                    );
+
+                    products.add(new OrderItemResponse(
+                            productResponse,
+                            product.getQuantity(),
+                            product.getSubtotal()
+                    ));
+                }
+
+                orderDetailResponses.add(new OrderDetailResponse(
+                        order.getId(),
+                        order.getUser().getId(),
+                        order.getTotalPrice(),
+                        order.getStatus(),
+                        products));
+
+
+
+            }
+
+
+            return ResponseEntity.ok(new PageImpl<>(orderDetailResponses));
+        } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         }
     }
