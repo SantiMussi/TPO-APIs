@@ -29,9 +29,15 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(categoryId);
     }
 
+
+
+
     //Si se lanza cualquier excepcion, se hace rollback
     @Transactional(rollbackFor = Throwable.class)
     public Category createCategory(String description) throws CategoryDuplicateException {
+
+
+
         List<Category> categories = categoryRepository.findByDescription(description);
         if (categories.isEmpty()) {
             return categoryRepository.save(new Category(description));
