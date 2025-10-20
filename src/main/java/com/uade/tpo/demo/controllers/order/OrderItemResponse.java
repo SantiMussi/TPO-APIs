@@ -1,19 +1,18 @@
 package com.uade.tpo.demo.controllers.order;
 
+import com.uade.tpo.demo.controllers.product.ProductResponse;
 import com.uade.tpo.demo.entity.OrderItem;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public record OrderItemResponse(
-        Long productId,
-        String name,
-        Integer quantity,
-        Double subtotal
-) {
-    public static OrderItemResponse from(OrderItem item) {
-        return new OrderItemResponse(
-                item.getProduct().getId(),
-                item.getProduct().getName(),
-                item.getQuantity(),
-                item.getSubtotal()
-        );
-    }
+@Data
+@AllArgsConstructor
+public class OrderItemResponse {
+
+
+        private ProductResponse product;
+        private Integer quantity;
+        private Double subtotal;
+
+
 }
