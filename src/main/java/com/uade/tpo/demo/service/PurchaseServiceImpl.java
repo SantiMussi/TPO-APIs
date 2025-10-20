@@ -1,5 +1,7 @@
 package com.uade.tpo.demo.service;
 
+import com.uade.tpo.demo.controllers.product.ImageManager;
+import com.uade.tpo.demo.controllers.product.ProductResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,10 +20,7 @@ import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService{
@@ -111,9 +110,29 @@ public class PurchaseServiceImpl implements PurchaseService{
         order.setStatus(OrderStatus.PENDIENTE);
         orderService.createOrder(order);
 
-        List<OrderItemResponse> itemResponses = order.getProducts().stream()
-                .map(OrderItemResponse::from)
-                .toList();
+        LinkedList<OrderItemResponse> itemResponses = new LinkedList<>();
+
+        for (OrderItem product : order.getProducts()) {
+            ProductResponse pr = new ProductResponse(
+                    product.getProduct().getId(),
+                    product.getProduct().getName(),
+                    product.getProduct().getDescription(),
+                    product.getProduct().getCategory().getId(),
+                    product.getProduct().getCategory().getDescription(),
+                    product.getProduct().getCreatorId(),
+                    product.getProduct().getSize(),
+                    product.getProduct().getStock(),
+                    product.getProduct().getPrice(),
+                    product.getProduct().getDiscount(),
+                    ImageManager.fileToBase64(product.getProduct().getImg())
+            );
+
+            itemResponses.add(new OrderItemResponse(
+                    pr,
+                    product.getQuantity(),
+                    product.getSubtotal()));
+        }
+
 
         return new PurchaseResponse(
                 order.getId(),
