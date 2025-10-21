@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.controllers.purchase;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.uade.tpo.demo.controllers.order.OrderItemResponse;
@@ -11,6 +12,7 @@ import lombok.Data;
 public class PurchaseResponse {
     private Long orderId;
     private Long userId;
+    private LocalDate issueDate;
     private List<OrderItemResponse> products;
     private Double total;
     private String coupon;

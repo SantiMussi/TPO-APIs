@@ -119,6 +119,7 @@ public class UserController {
                 orderDetailResponses.add(new OrderDetailResponse(
                         order.getId(),
                         order.getUser().getId(),
+                        order.getIssueDate(),
                         order.getTotalPrice(),
                         order.getStatus(),
                         products));
@@ -170,6 +171,7 @@ public class UserController {
                 orderDetailResponses.add(new OrderDetailResponse(
                         order.getId(),
                         order.getUser().getId(),
+                        order.getIssueDate(),
                         order.getTotalPrice(),
                         order.getStatus(),
                         products));

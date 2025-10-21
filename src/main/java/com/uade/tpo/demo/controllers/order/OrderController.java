@@ -65,6 +65,7 @@ public class OrderController {
             OrderDetailResponse response = new OrderDetailResponse(
                     order.getId(),
                     order.getUser().getId(),
+                    order.getIssueDate(),
                     order.getTotalPrice(),
                     order.getStatus(),
                     products);

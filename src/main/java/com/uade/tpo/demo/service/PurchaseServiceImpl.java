@@ -137,6 +137,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         return new PurchaseResponse(
                 order.getId(),
                 userId,
+                order.getIssueDate(),
                 itemResponses,
                 total,
                 couponCode,
