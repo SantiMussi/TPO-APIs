@@ -2,8 +2,10 @@ package com.uade.tpo.demo.controllers.categories;
 
 import com.uade.tpo.demo.controllers.product.ImageManager;
 import com.uade.tpo.demo.controllers.product.ProductResponse;
+import com.uade.tpo.demo.exceptions.CategoryHasProductException;
 import com.uade.tpo.demo.exceptions.CategoryNotFound;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.uade.tpo.demo.entity.Category;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,17 +120,23 @@ public class CategoriesController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteCategory(@RequestBody CategoryDeleteRequest deleteRequest)
-            throws CategoryNotFound{
-        System.out.println("AAAAAAA");
-        Category result = categoryService.deleteCategory(deleteRequest.getId());
-        return ResponseEntity.ok().body("Category id: " + result.getId() + " Deleted");
-
+            throws CategoryNotFound {
+        try {
+            Category result = categoryService.deleteCategory(deleteRequest.getId());
+            return ResponseEntity.ok().body("Category id: " + result.getId() + " Deleted");
+        } catch (CategoryHasProductException ex) {
+            Map<String, Object> body = Map.of(
+                    "status", HttpStatus.CONFLICT.value(),
+                    "error", "CATEGORY_HAS_PRODUCTS",
+                    "message", "No se puede eliminar la categoría porque tiene productos asociados.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        }
     }
 
     @PutMapping("/modify/{categoryId}")
-    public ResponseEntity<Object> modifyCategory(@PathVariable Long categoryId, @RequestBody CategoryModifyRequest modifyRequest) 
+    public ResponseEntity<Object> modifyCategory(@PathVariable Long categoryId, @RequestBody CategoryModifyRequest modifyRequest)
             throws CategoryNotFound, CategoryDuplicateException{
-        
+
         categoryService.modifyCategory(categoryId, modifyRequest.getDescription());
         return ResponseEntity.ok().body("Category modified succesfully.");
     }

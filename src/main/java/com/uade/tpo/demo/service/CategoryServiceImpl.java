@@ -3,6 +3,7 @@ package com.uade.tpo.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.uade.tpo.demo.exceptions.CategoryHasProductException;
 import com.uade.tpo.demo.exceptions.CategoryNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,11 +52,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Transactional(rollbackFor = Throwable.class)
-    public Category deleteCategory(long id) throws CategoryNotFound {
+    public Category deleteCategory(long id) throws CategoryNotFound, CategoryHasProductException {
         System.out.println("AAAAAAAAAAAAAAAAAAAAA");
         Optional<Category> cat = categoryRepository.findById(id);
         if (cat.isPresent()){
             System.out.println(cat.get().getId());;
+            if (cat.get().getProduct() != null && !cat.get().getProduct().isEmpty()) {
+                throw new CategoryHasProductException();
+            }
             categoryRepository.delete(cat.get());
             return cat.get();
         } else {
