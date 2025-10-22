@@ -3,6 +3,7 @@ package com.uade.tpo.demo.controllers.categories;
 import com.uade.tpo.demo.controllers.product.ImageManager;
 import com.uade.tpo.demo.controllers.product.ProductResponse;
 import com.uade.tpo.demo.exceptions.CategoryNotFound;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import com.uade.tpo.demo.entity.Category;
@@ -30,12 +31,23 @@ public class CategoriesController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Page<Category>> getCategories(
+    public ResponseEntity<Page<CategoryResponse>> getCategories(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
-        if (page == null || size == null)
-            return ResponseEntity.ok(categoryService.getCategories(PageRequest.of(0, Integer.MAX_VALUE)));
-        return ResponseEntity.ok(categoryService.getCategories(PageRequest.of(page, size)));
+        Page<Category> result;
+        if (page == null || size == null){
+            result = categoryService.getCategories(PageRequest.of(0, Integer.MAX_VALUE));
+        } else {
+            result = categoryService.getCategories(PageRequest.of(page, size));
+        }
+
+        LinkedList<CategoryResponse> response = new LinkedList<>();
+
+        for (Category category : result.get().toList()) {
+            response.add(getCategoryById(category.getId()).getBody());
+        }
+
+        return ResponseEntity.ok(new PageImpl<>(response));
     }
 
     @GetMapping("/{categoryId}")

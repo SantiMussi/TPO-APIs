@@ -56,6 +56,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @Column(nullable = false, unique = true)
     public String getUsername() {
         return email;
     }
