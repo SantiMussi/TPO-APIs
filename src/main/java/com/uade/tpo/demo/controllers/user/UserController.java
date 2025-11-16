@@ -122,6 +122,8 @@ public class UserController {
                         order.getIssueDate(),
                         order.getTotalPrice(),
                         order.getStatus(),
+                        order.getPaymentMethod(),
+                        order.getShippingMethod(),
                         products));
 
 
@@ -174,6 +176,8 @@ public class UserController {
                         order.getIssueDate(),
                         order.getTotalPrice(),
                         order.getStatus(),
+                        order.getPaymentMethod(),
+                        order.getShippingMethod(),
                         products));
 
 

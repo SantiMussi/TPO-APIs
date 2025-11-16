@@ -15,7 +15,9 @@ import com.uade.tpo.demo.entity.Coupon;
 import com.uade.tpo.demo.entity.Order;
 import com.uade.tpo.demo.entity.OrderItem;
 import com.uade.tpo.demo.entity.OrderStatus;
+import com.uade.tpo.demo.entity.PaymentMethod;
 import com.uade.tpo.demo.entity.Product;
+import com.uade.tpo.demo.entity.ShippingMethod;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 
@@ -108,6 +110,17 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         order.setTotalPrice(total);
         order.setStatus(OrderStatus.PENDIENTE);
+
+        if (request.getPaymentMethod() == null || request.getShippingMethod() == null) {
+            throw new IllegalArgumentException("Payment and shipping methods are required.");
+        }
+
+        PaymentMethod paymentMethod = request.getPaymentMethod();
+        ShippingMethod shippingMethod = request.getShippingMethod();
+
+        order.setPaymentMethod(paymentMethod);
+        order.setShippingMethod(shippingMethod);
+
         orderService.createOrder(order);
 
         LinkedList<OrderItemResponse> itemResponses = new LinkedList<>();
@@ -141,6 +154,8 @@ public class PurchaseServiceImpl implements PurchaseService{
                 itemResponses,
                 total,
                 couponCode,
+                paymentMethod,
+                shippingMethod,
                 "Purchase successful"
         );
     }

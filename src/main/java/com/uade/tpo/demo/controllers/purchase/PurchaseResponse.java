@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.uade.tpo.demo.controllers.order.OrderItemResponse;
+import com.uade.tpo.demo.entity.PaymentMethod;
+import com.uade.tpo.demo.entity.ShippingMethod;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,5 +19,7 @@ public class PurchaseResponse {
     private List<OrderItemResponse> products;
     private Double total;
     private String coupon;
+    private PaymentMethod paymentMethod;
+    private ShippingMethod shippingMethod;
     private String message;
 }

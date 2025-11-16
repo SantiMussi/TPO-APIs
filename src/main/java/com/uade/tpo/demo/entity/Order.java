@@ -51,4 +51,10 @@ public class Order {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDate issueDate;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    private ShippingMethod shippingMethod;
 }

@@ -68,6 +68,8 @@ public class OrderController {
                     order.getIssueDate(),
                     order.getTotalPrice(),
                     order.getStatus(),
+                    order.getPaymentMethod(),
+                    order.getShippingMethod(),
                     products);
 
 
