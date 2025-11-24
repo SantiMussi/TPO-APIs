@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public Product changeProductInfo (Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException{
+    public Product changeProductInfo (Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId, byte[] img) throws ProductNotFoundException{
         Product p = productRepository.findById(prodId).orElseThrow(() -> new ProductNotFoundException());
 
         if (name != null) p.setName(name);
@@ -94,7 +94,8 @@ public class ProductServiceImpl implements ProductService{
         if (categoryId != null){
             Optional<Category> c = categoryRepository.findById(categoryId); 
             p.setCategory(c.get());
-        } 
+        }
+        if(img != null) p.setImg(img);
 
         
         return productRepository.save(p);

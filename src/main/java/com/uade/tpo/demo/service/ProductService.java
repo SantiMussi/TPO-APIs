@@ -16,7 +16,7 @@ public interface ProductService {
 
     public Product createProduct(String name, String description, Size size, int stock, double price, double discount, Long category_id, byte[] img) throws ProductDuplicateException;
 
-    public Product changeProductInfo(Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId) throws ProductNotFoundException;
+    public Product changeProductInfo(Long prodId, String name, String description, Size size, Integer stock, Double price, Double discount, Long categoryId, byte[] img) throws ProductNotFoundException;
 
     public void deleteProduct(Long productId) throws ProductNotFoundException;
 
