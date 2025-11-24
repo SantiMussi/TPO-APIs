@@ -81,14 +81,6 @@ public class CategoriesController {
 
             CategoryResponse response = new CategoryResponse(result.get().getId(), result.get().getDescription(), products);
 
-            System.out.println("ID: " + result.get().getId());
-
-            System.out.println("Desc: " + result.get().getDescription());
-
-            System.out.println("Products: " + products);
-
-            System.out.println(response);
-
 
 
             return ResponseEntity.ok(response);
