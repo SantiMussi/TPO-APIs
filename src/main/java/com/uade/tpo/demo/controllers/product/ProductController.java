@@ -138,7 +138,7 @@ public class ProductController {
                 img
         );
 
-        System.out.println(result.getId());
+        // System.out.println(result.getId());
 
         return ResponseEntity.created(URI.create("/product/" + result.getId())).body(result);
     }
