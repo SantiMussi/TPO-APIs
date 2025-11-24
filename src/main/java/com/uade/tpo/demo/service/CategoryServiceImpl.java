@@ -53,10 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional(rollbackFor = Throwable.class)
     public Category deleteCategory(long id) throws CategoryNotFound, CategoryHasProductException {
-        // System.out.println("AAAAAAAAAAAAAAAAAAAAA");
         Optional<Category> cat = categoryRepository.findById(id);
         if (cat.isPresent()){
-            // System.out.println(cat.get().getId());;
             if (cat.get().getProduct() != null && !cat.get().getProduct().isEmpty()) {
                 throw new CategoryHasProductException();
             }
