@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService{
     private UserService userService;
 
     public Page<Product> getProducts(PageRequest pageRequest) {
-        return productRepository.findAll(pageRequest);
+        return productRepository.findByIsActiveTrue(pageRequest);
     }
 
 
@@ -104,7 +104,8 @@ public class ProductServiceImpl implements ProductService{
     public void deleteProduct(Long productId){
         Product p = productRepository.findById(productId)
             .orElseThrow(() -> new ProductNotFoundException());
-        productRepository.delete(p); 
+        p.setActive(false);
+        productRepository.save(p);
     }
 
     @Transactional

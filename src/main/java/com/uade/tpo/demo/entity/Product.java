@@ -24,6 +24,7 @@ public class Product {
         this.price = price;
         this.discount = discount;
         this.img = img;
+        this.isActive = true;
     }
 
     @Column
@@ -55,4 +56,7 @@ public class Product {
     @Lob
     @Column(name="imgdata", columnDefinition = "MEDIUMBLOB")
     private byte[] img;
+
+    @Column(nullable = false)
+    private boolean isActive;
 }
