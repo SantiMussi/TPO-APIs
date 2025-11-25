@@ -33,4 +33,8 @@ public class Coupon {
 
     @Column(name = "expiration_date")
     private LocalDate expirationDate;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isActive = true;
 }

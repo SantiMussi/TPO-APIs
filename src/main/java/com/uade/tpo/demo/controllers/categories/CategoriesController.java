@@ -113,16 +113,8 @@ public class CategoriesController {
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteCategory(@RequestBody CategoryDeleteRequest deleteRequest)
             throws CategoryNotFound {
-        try {
-            Category result = categoryService.deleteCategory(deleteRequest.getId());
-            return ResponseEntity.ok().body("Category id: " + result.getId() + " Deleted");
-        } catch (CategoryHasProductException ex) {
-            Map<String, Object> body = Map.of(
-                    "status", HttpStatus.CONFLICT.value(),
-                    "error", "CATEGORY_HAS_PRODUCTS",
-                    "message", "No se puede eliminar la categoría porque tiene productos asociados.");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
-        }
+        Category result = categoryService.deleteCategory(deleteRequest.getId());
+        return ResponseEntity.ok().body("Category id: " + result.getId() + " Deleted");
     }
 
     @PutMapping("/modify/{categoryId}")

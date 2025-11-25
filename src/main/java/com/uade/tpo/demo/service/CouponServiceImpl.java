@@ -27,13 +27,15 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<Coupon> findAll() {
-        return couponRepository.findAll();
+        return couponRepository.findAllActive();
     }
 
     @Override
     public boolean delete(Long id) {
-        if (couponRepository.existsById(id)) {
-            couponRepository.deleteById(id);
+        Optional<Coupon> coupon = couponRepository.findById(id);
+        if (coupon.isPresent()) {
+            coupon.get().setActive(false);
+            couponRepository.save(coupon.get());
             return true;
         }
         return false;

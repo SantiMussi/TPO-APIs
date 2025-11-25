@@ -19,6 +19,7 @@ public class Category {
 
     public Category(String description) {
         this.description = description;
+        this.isActive = true;
     }
 
     @Id
@@ -27,6 +28,9 @@ public class Category {
 
     @Column
     private String description;
+
+    @Column(nullable = false)
+    private boolean isActive = true;
 
     @OneToMany(mappedBy = "category")
     private List<Product> product;

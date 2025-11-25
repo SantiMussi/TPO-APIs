@@ -23,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     public Page<Category> getCategories(PageRequest pageable) {
-        return categoryRepository.findAll(pageable);
+        return categoryRepository.findAllActive(pageable);
     }
 
     public Optional<Category> getCategoryById(Long categoryId) {
@@ -52,18 +52,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Transactional(rollbackFor = Throwable.class)
-    public Category deleteCategory(long id) throws CategoryNotFound, CategoryHasProductException {
+    public Category deleteCategory(long id) throws CategoryNotFound {
         Optional<Category> cat = categoryRepository.findById(id);
         if (cat.isPresent()){
-            if (cat.get().getProduct() != null && !cat.get().getProduct().isEmpty()) {
-                throw new CategoryHasProductException();
-            }
-            categoryRepository.delete(cat.get());
+            cat.get().setActive(false);
+            categoryRepository.save(cat.get());
             return cat.get();
         } else {
             throw new CategoryNotFound();
         }
-
     }
 
     @Transactional(rollbackFor = Throwable.class)
