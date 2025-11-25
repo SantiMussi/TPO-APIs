@@ -95,9 +95,8 @@ public class ProductServiceImpl implements ProductService{
             Optional<Category> c = categoryRepository.findById(categoryId); 
             p.setCategory(c.get());
         }
-        if(img != null) p.setImg(img);
+        if(img != null){p.setImg(img);};
 
-        
         return productRepository.save(p);
     }
     

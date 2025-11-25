@@ -118,7 +118,8 @@ public class ProductController {
                 productRequest.getPrice(),
                 productRequest.getDiscount(),
                 productRequest.getCategoryId(),
-                img);
+                img
+        );
 
         return ResponseEntity.created(URI.create("/product/" + result.getId())).body(result);
     }
