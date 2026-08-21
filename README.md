@@ -1,8 +1,8 @@
 # TPO-APIs
 
-API backend built with Spring Boot for managing users, products, categories, orders, coupons, purchases, and stock.
+Backend de API construido con Spring Boot para gestionar usuarios, productos, categorías, pedidos, cupones, compras y stock.
 
-## Tech Stack
+## Stack Tecnológico
 - Java 17
 - Spring Boot 3
 - Spring Security
@@ -10,25 +10,25 @@ API backend built with Spring Boot for managing users, products, categories, ord
 - MySQL
 - Maven
 
-## Getting Started
-1. Make sure you have Java 17 and Maven installed.
-2. Configure your database and any required environment/application properties.
-3. Run the application:
+## Primeros Pasos
+1. Asegurate de tener Java 17 y Maven instalados.
+2. Configurá tu base de datos y cualquier propiedad requerida de entorno/aplicación.
+3. Ejecutá la aplicación:
    ```bash
    ./mvnw spring-boot:run
    ```
 
-## Run Tests
+## Ejecutar Tests
 ```bash
 ./mvnw test
 ```
 
-## Main API Areas
-- Authentication
-- Users
-- Products
-- Categories
-- Orders
-- Coupons
-- Purchases
+## Áreas Principales de la API
+- Autenticación
+- Usuarios
+- Productos
+- Categorías
+- Pedidos
+- Cupones
+- Compras
 - Stock
